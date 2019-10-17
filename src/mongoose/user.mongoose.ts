@@ -42,15 +42,16 @@ export const UserSchema: Schema = new Schema({
         }
     }
 });
-UserSchema.pre('save', async (next) => {
-    const user = rootThis as any;
+
+interface IUserDto extends IUser, Document {
+}
+
+UserSchema.pre('save', async function(next) {
+    const user = this as IUserDto;
     if (user.isModified('password')) {
         user.password = await hash(user.password, 8);
     }
     next();
 });
-UserSchema.methods.fullName = function(): string {
-    return (`${this.firstName.trim()} ${this.lastName.trim()}`);
-};
 
 export const User: Model<IUserDTO> = model<IUserDTO>('User', UserSchema);
