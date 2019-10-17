@@ -15,7 +15,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('', BaseRouter);
 
 connectToMongo().then(() => {
-    console.log('Connected to MongoDB');
+    console.log('SUCCESS: Connected to MongoDB');
 });
 
 const staticDir = path.join(__dirname, 'public');
