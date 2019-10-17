@@ -1,6 +1,6 @@
 import {logger} from '@shared';
 import {Request, Response, Router} from 'express';
-import {BAD_REQUEST, INTERNAL_SERVER_ERROR, OK} from 'http-status-codes';
+import {BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, OK} from 'http-status-codes';
 import {User} from '../mongoose/user.mongoose';
 
 const router = Router();
@@ -22,21 +22,14 @@ router.get('/', async (req: Request, res: Response) => {
  *                       Add One - "POST /api/users/"
  ******************************************************************************/
 
-router.post('/add', async (req: Request, res: Response) => {
+router.post('/', async (req: Request, res: Response) => {
+    const user = new User(req.body);
     try {
-        // const { user } = req.body;
-        // if (!user) {
-        //     return res.status(BAD_REQUEST).json({
-        //         error: paramMissingError,
-        //     });
-        // }
-        // await userDao.add(user);
-        // return res.status(CREATED).end();
-    } catch (err) {
-        logger.error(err.message, err);
-        return res.status(BAD_REQUEST).json({
-            error: err.message,
-        });
+        await user.save();
+        res.status(CREATED).send(user);
+    } catch (e) {
+        console.error(e);
+        res.status(BAD_REQUEST).send(e);
     }
 });
 
@@ -44,7 +37,7 @@ router.post('/add', async (req: Request, res: Response) => {
  *                       Update - "PUT /api/users/:id"
  ******************************************************************************/
 
-router.put('/update', async (req: Request, res: Response) => {
+router.put('/:id', async (req: Request, res: Response) => {
     try {
         // const { user } = req.body;
         // if (!user) {
@@ -67,7 +60,7 @@ router.put('/update', async (req: Request, res: Response) => {
  *                    Delete - "DELETE /api/users/:id"
  ******************************************************************************/
 
-router.delete('/delete/:id', async (req: Request, res: Response) => {
+router.delete('/:id', async (req: Request, res: Response) => {
     // try {
     //     await userDao.delete(Number(req.params.id));
     //     return res.status(OK).end();
