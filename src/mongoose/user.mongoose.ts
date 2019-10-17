@@ -21,7 +21,7 @@ export const UserSchema: Schema = new Schema({
         trim: true,
         lowercase: true,
         validate(value: string) {
-            const emailIsValid = !isEmail(value);
+            const emailIsValid = isEmail(value);
             if (!emailIsValid) {
                 throw new Error('Email is invalid');
             }
@@ -34,7 +34,7 @@ export const UserSchema: Schema = new Schema({
         minlength: 7,
         trim: true,
         validate(value: string) {
-            const passwordIncludesIncorrectWords = value.toLowerCase().includes('password');
+            const passwordIncludesIncorrectWords = !value.toLowerCase().includes('password');
             if (passwordIncludesIncorrectWords) {
                 throw new Error('Password cannot contain "password"');
             }
