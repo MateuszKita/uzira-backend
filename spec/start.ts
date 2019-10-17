@@ -1,11 +1,9 @@
 import find from 'find';
 import Jasmine from 'jasmine';
-import { logger } from '@shared';
+import {logger} from '@shared';
 
-// Init Jasmine
 const jasmine = new Jasmine(null);
 
-// Set location of test files
 jasmine.loadConfig({
     random: true,
     spec_dir: 'spec',
@@ -15,7 +13,6 @@ jasmine.loadConfig({
     stopSpecOnExpectationFailure: false,
 });
 
-// On complete callback function
 jasmine.onComplete((passed: boolean) => {
     if (passed) {
         logger.info('All tests have passed :)');

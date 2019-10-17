@@ -5,7 +5,7 @@
 		"build": "node ./util/build.js",
 		"lint": "tslint --project \"tsconfig.json\"",
 		"start": "cross-env ENV_FILE=production node -r ./env -r module-alias/register ./dist/start.js",
-		"start-dev": "nodemon --config \"./util/nodemon.json\"",
+		"start-dev": "nodemon ENV_FILE=development --config \"./util/nodemon.json\"",
 		"test": "nodemon --config \"./util/nodemon.test.json\""
 	},
 	"_moduleAliases": {
@@ -17,6 +17,7 @@
 	"dependencies": {
 		"@types/mongodb": "^3.3.0",
 		"@types/mongoose": "^5.5.13",
+		"bcryptjs": "^2.4.3",
 		"cookie-parser": "^1.4.4",
 		"cross-env": "^5.2.0",
 		"dotenv": "^8.0.0",
