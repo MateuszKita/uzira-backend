@@ -1,2 +1,2 @@
-export * from './Logger';
-export * from './Misc';
+export * from './logger';
+export * from './misc';
