@@ -1,6 +1,7 @@
 import {logger} from '@shared';
 import {Request, Response, Router} from 'express';
-import {BAD_REQUEST, OK} from 'http-status-codes';
+import {BAD_REQUEST, INTERNAL_SERVER_ERROR, OK} from 'http-status-codes';
+import {User} from '../mongoose/user.mongoose';
 
 const router = Router();
 
@@ -10,14 +11,10 @@ const router = Router();
 
 router.get('/', async (req: Request, res: Response) => {
     try {
-        // const users = await userDao.getAll();
-        // return res.status(OK).json({users});
-        return res.status(OK).json({text: 'Kocham Kaczusię'});
-    } catch (err) {
-        logger.error(err.message, err);
-        return res.status(BAD_REQUEST).json({
-            error: err.message,
-        });
+        const users = await User.find({});
+        res.send(users);
+    } catch (e) {
+        res.status(INTERNAL_SERVER_ERROR).send();
     }
 });
 
