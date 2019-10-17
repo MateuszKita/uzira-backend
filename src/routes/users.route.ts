@@ -5,10 +5,10 @@ import {BAD_REQUEST, OK} from 'http-status-codes';
 const router = Router();
 
 /******************************************************************************
- *                      Get All Users - "GET /api/users/all"
+ *                      Get All Users - "GET /api/users/"
  ******************************************************************************/
 
-router.get('/all', async (req: Request, res: Response) => {
+router.get('/', async (req: Request, res: Response) => {
     try {
         // const users = await userDao.getAll();
         // return res.status(OK).json({users});
@@ -22,7 +22,7 @@ router.get('/all', async (req: Request, res: Response) => {
 });
 
 /******************************************************************************
- *                       Add One - "POST /api/users/add"
+ *                       Add One - "POST /api/users/"
  ******************************************************************************/
 
 router.post('/add', async (req: Request, res: Response) => {
@@ -44,7 +44,7 @@ router.post('/add', async (req: Request, res: Response) => {
 });
 
 /******************************************************************************
- *                       Update - "PUT /api/users/update"
+ *                       Update - "PUT /api/users/:id"
  ******************************************************************************/
 
 router.put('/update', async (req: Request, res: Response) => {
@@ -67,7 +67,7 @@ router.put('/update', async (req: Request, res: Response) => {
 });
 
 /******************************************************************************
- *                    Delete - "DELETE /api/users/delete/:id"
+ *                    Delete - "DELETE /api/users/:id"
  ******************************************************************************/
 
 router.delete('/delete/:id', async (req: Request, res: Response) => {

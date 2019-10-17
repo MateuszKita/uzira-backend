@@ -10,7 +10,6 @@
     ],
     "no-console": false,
     "no-unused-variable": true,
-    "interface-name": false,
     "trailing-comma": false
   },
   "linterOptions": {
