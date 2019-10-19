@@ -30,7 +30,7 @@ export const connectToMongo = async () => {
 
     const connectWithRetry = async () => {
         console.log('MongoDB connection with retry');
-        await connect('mongodb://mongo:27017/test', options).then(() => {
+        await connect(mongoUrl as string, options).then(() => {
             console.log('MongoDB is connected');
         }).catch(() => {
             console.log('MongoDB connection unsuccessful, retry after 5 seconds.');
