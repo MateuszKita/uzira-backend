@@ -20,6 +20,9 @@ export const connectToMongo = async () => {
     // }
 
     const options = {
+        useNewUrlParser: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
         autoIndex: false, // Don't build indexes
         reconnectTries: 30, // Retry up to 30 times
         reconnectInterval: 500, // Reconnect every 500ms
@@ -32,8 +35,8 @@ export const connectToMongo = async () => {
         console.log('MongoDB connection with retry');
         await connect(mongoUrl as string, options).then(() => {
             console.log('MongoDB is connected');
-        }).catch(() => {
-            console.log('MongoDB connection unsuccessful, retry after 5 seconds.');
+        }).catch((err) => {
+            console.log('MongoDB connection unsuccessful, retry after 5 seconds.', err);
             setTimeout(connectWithRetry, 5000);
         });
     };
