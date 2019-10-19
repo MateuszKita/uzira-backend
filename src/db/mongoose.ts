@@ -3,6 +3,8 @@ import {connect} from 'mongoose';
 export const connectToMongo = async () => {
     const mongoUrl = process.env.MONGODB_URI;
 
+    console.log('mongoUrl', mongoUrl);
+
     if (mongoUrl) {
         try {
             await connect(mongoUrl, {
