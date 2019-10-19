@@ -1,20 +1,24 @@
-import {logger} from '@shared';
 import {Request, Response, Router} from 'express';
-import {BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, OK} from 'http-status-codes';
-import {User} from '../mongoose/user.mongoose';
+import {BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND} from 'http-status-codes';
+import {IUserDTO, User} from '../mongoose/user.mongoose';
 
 const router = Router();
 
 /******************************************************************************
- *                      Get All Users - "GET /api/users/"
+ *                      Get All Users / Specific User - "GET /api/users/:id?"
  ******************************************************************************/
 
 router.get('/', async (req: Request, res: Response) => {
     try {
-        const users = await User.find({});
-        res.send(users);
+        if (req.params.id) {
+            const user = User.findById(req.params.id);
+            res.send(user);
+        } else {
+            const users = await User.find({});
+            res.send(users);
+        }
     } catch (e) {
-        res.status(INTERNAL_SERVER_ERROR).send();
+        res.status(INTERNAL_SERVER_ERROR).send(e);
     }
 });
 
@@ -37,22 +41,26 @@ router.post('/', async (req: Request, res: Response) => {
  *                       Update - "PUT /api/users/:id"
  ******************************************************************************/
 
-router.put('/:id', async (req: Request, res: Response) => {
+router.patch('/:id', async (req: Request, res: Response) => {
+    const updates = Object.keys(req.body).length > 0 ? Object.keys(req.body) : [];
+    const allowedUpdates = ['name', 'email', 'password', 'age'];
+    const isValidOperation = updates.every((update) => allowedUpdates.includes(update)) && updates.length > 0;
+
+    if (!isValidOperation) {
+        return res.status(BAD_REQUEST).send({error: 'Invalid updates!'});
+    }
+
     try {
-        // const { user } = req.body;
-        // if (!user) {
-        //     return res.status(BAD_REQUEST).json({
-        //         error: paramMissingError,
-        //     });
-        // }
-        // user.id = Number(user.id);
-        // await userDao.update(user);
-        // return res.status(OK).end();
-    } catch (err) {
-        logger.error(err.message, err);
-        return res.status(BAD_REQUEST).json({
-            error: err.message,
-        });
+        const user: IUserDTO | null = await User.findById(req.params.id);
+        if (user) {
+            updates.forEach((update) => (user as any)[update] = req.body[update]);
+            await user.save();
+        } else {
+            return res.status(NOT_FOUND).send();
+        }
+        res.send(user);
+    } catch (e) {
+        res.status(BAD_REQUEST).send(e);
     }
 });
 
@@ -61,15 +69,15 @@ router.put('/:id', async (req: Request, res: Response) => {
  ******************************************************************************/
 
 router.delete('/:id', async (req: Request, res: Response) => {
-    // try {
-    //     await userDao.delete(Number(req.params.id));
-    //     return res.status(OK).end();
-    // } catch (err) {
-    //     logger.error(err.message, err);
-    //     return res.status(BAD_REQUEST).json({
-    //         error: err.message,
-    //     });
-    // }
+    try {
+        const user = await User.findByIdAndDelete(req.params.id);
+        if (!user) {
+            return res.status(NOT_FOUND).send();
+        }
+        res.send(user);
+    } catch (e) {
+        res.status(INTERNAL_SERVER_ERROR).send();
+    }
 });
 
 export default router;
