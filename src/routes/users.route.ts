@@ -8,7 +8,7 @@ const router = Router();
  *                      Get All Users / Specific User - "GET /api/users/:id?"
  ******************************************************************************/
 
-router.get('/', async (req: Request, res: Response) => {
+router.get('/:id', async (req: Request, res: Response) => {
     try {
         if (req.params.id) {
             const user = User.findById(req.params.id);
