@@ -11,7 +11,7 @@ const router = Router();
 router.get('/:id', async (req: Request, res: Response) => {
     try {
         if (req.params.id) {
-            const user = User.findById(req.params.id);
+            const user = await User.findById(req.params.id);
             res.send(user);
         } else {
             const users = await User.find({});
