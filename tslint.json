@@ -10,7 +10,8 @@
     ],
     "no-console": false,
     "no-unused-variable": true,
-    "trailing-comma": false
+    "trailing-comma": false,
+    "object-literal-key-quotes": false
   },
   "linterOptions": {
     "exclude": [

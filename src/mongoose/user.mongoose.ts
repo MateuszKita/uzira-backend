@@ -1,15 +1,11 @@
-import {hash} from 'bcryptjs';
+import {compare, hash} from 'bcryptjs';
 import isEmail = require('validator/lib/isEmail');
-import {Document, Schema, Model, model} from 'mongoose';
-import {IUser} from '../models';
+import {Schema, Model, model} from 'mongoose';
+import {JWT_KEY} from '../shared/constants';
+import {sign} from 'jsonwebtoken';
+import {IUserDTO} from '../models/users.model';
 
-export interface IUserDTO extends IUser, Document {
-    fullName(): string;
-}
-
-const rootThis = this;
-
-export const UserSchema: Schema = new Schema({
+export const userSchema: Schema = new Schema({
     name: {
         type: String,
         required: true,
@@ -17,6 +13,7 @@ export const UserSchema: Schema = new Schema({
     },
     email: {
         type: String,
+        unique: true,
         required: true,
         trim: true,
         lowercase: true,
@@ -40,18 +37,69 @@ export const UserSchema: Schema = new Schema({
             }
             return !passwordIncludesIncorrectWords;
         }
-    }
+    },
+    tokens: [{
+        token: {
+            type: String,
+            required: true
+        }
+    }]
 });
 
-interface IUserDto extends IUser, Document {
-}
+// userSchema.virtual('tasks', {
+//     ref: 'Task',
+//     localField: '_id',
+//     foreignField: 'owner'
+// });
 
-UserSchema.pre('save', async function(next) {
-    const user = this as IUserDto;
+userSchema.pre('save', async function(next) {
+    const user = this as IUserDTO;
     if (user.isModified('password')) {
         user.password = await hash(user.password, 8);
     }
     next();
 });
 
-export const User: Model<IUserDTO> = model<IUserDTO>('User', UserSchema);
+userSchema.pre('remove', async function(next) {
+    const user = this;
+    // await Task.deleteMany({owner: user._id});
+    next();
+});
+
+userSchema.methods.toJSON = function() {
+    const user = this;
+    const userObject = user.toObject();
+
+    delete userObject.password;
+    delete userObject.tokens;
+
+    return userObject;
+};
+
+userSchema.methods.generateAuthToken = async function() {
+    const user = this;
+    const token = sign({_id: user._id.toString()}, JWT_KEY);
+
+    user.tokens = user.tokens.concat({token});
+    await user.save();
+
+    return token;
+};
+
+userSchema.statics.findByCredentials = async (email: string, password: string) => {
+    const user = await User.findOne({email});
+
+    if (!user) {
+        throw new Error('Unable to login');
+    }
+
+    const isMatch = await compare(password, user.password);
+
+    if (!isMatch) {
+        throw new Error('Unable to login');
+    }
+
+    return user;
+};
+
+export const User: Model<IUserDTO> = model('User', userSchema);
