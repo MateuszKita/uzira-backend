@@ -3,7 +3,6 @@ import {BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND} from 'http-statu
 import {Project} from '../mongoose/projects.mongoose';
 import {IAuthorizedRequest, IUserDTO} from '../models/users.model';
 import {auth} from '../middleware/authorization';
-import {User} from '../mongoose/users.mongoose';
 
 const router = Router();
 
@@ -35,13 +34,10 @@ router.post('/', auth, async (req: Request, res: Response) => {
  *                       Get Projects - "GET /projects/"
  ******************************************************************************/
 
-router.post('/', async (req: Request, res: Response) => {
+router.get('/', async (req: Request, res: Response) => {
     try {
-        const project = await Project.find({});
-
-        await user.save();
-
-        res.status(CREATED).send({user, token});
+        const projects = await Project.find({});
+        res.send(projects);
     } catch (e) {
         console.error(e);
         res.status(BAD_REQUEST).send(e);
