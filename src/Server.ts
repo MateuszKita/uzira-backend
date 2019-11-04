@@ -9,8 +9,9 @@ import {OK} from 'http-status-codes';
 
 const app = express();
 
+app.options('*', cors());
 app.use(cors({
-    origin: 'https://uzira.netlify.com/',
+    origin: '*',
     methods: 'OPTIONS, GET, HEAD, PUT, PATCH, POST, DELETE',
     preflightContinue: false,
     credentials: true,
