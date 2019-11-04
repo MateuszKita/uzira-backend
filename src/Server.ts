@@ -3,6 +3,7 @@ import BaseRouter from './routes';
 import {connectToMongo} from './db/mongoose';
 import cors from 'cors';
 import cookieParser = require('cookie-parser');
+import bodyParser from 'body-parser';
 
 const app = express();
 
@@ -26,6 +27,10 @@ app.use(cors({
     allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
 }));
 
+app.use(bodyParser.urlencoded({extended: false}));
+
+// parse application/json
+app.use(bodyParser.json());
 app.use(cookieParser());
 
 app.use('', BaseRouter);
