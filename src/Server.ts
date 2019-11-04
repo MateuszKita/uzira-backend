@@ -5,10 +5,18 @@ import path from 'path';
 import BaseRouter from './routes';
 import {connectToMongo} from './db/mongoose';
 import cors from 'cors';
+import {OK} from 'http-status-codes';
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: 'https://uzira.netlify.com/',
+    methods: 'OPTIONS, GET, HEAD, PUT, PATCH, POST, DELETE',
+    preflightContinue: false,
+    credentials: true,
+    optionsSuccessStatus: OK,
+    allowedHeaders: 'X-Requested-With,content-type'
+}));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
