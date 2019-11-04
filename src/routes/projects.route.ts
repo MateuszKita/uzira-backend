@@ -15,12 +15,16 @@ router.post('/', auth, async (req: Request, res: Response) => {
         const user = (req as any as IAuthorizedRequest).user;
         const project = new Project({
             ...req.body,
+            sprints: [],
             users: [
                 {
                     name: user.name,
                     id: user._id
                 }
-            ]
+            ],
+            backlog: {
+                tasks: []
+            }
         });
         await project.save();
         res.send(project);
