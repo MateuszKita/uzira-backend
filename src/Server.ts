@@ -22,7 +22,7 @@ app.use(cors({
     exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar', 'Access-Control-Allow-Origin'],
     credentials: true,
     methods: 'GET, PUT, POST, DELETE, PATCH, OPTIONS',
-    allowedHeaders: 'X-Requested-With, content-type, Authorization'
+    allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
 }));
 
 app.use(cookieParser());
