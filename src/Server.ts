@@ -27,8 +27,7 @@ app.use(cors({
     allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
 }));
 
-app.use(bodyParser.urlencoded({extended: false}));
-
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use('', BaseRouter);
