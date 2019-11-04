@@ -5,7 +5,7 @@ import path from 'path';
 import BaseRouter from './routes';
 import {connectToMongo} from './db/mongoose';
 import cors from 'cors';
-import {OK} from 'http-status-codes';
+import {NO_CONTENT} from 'http-status-codes';
 
 const app = express();
 
@@ -15,7 +15,7 @@ app.use(cors({
     methods: 'OPTIONS, GET, HEAD, PUT, PATCH, POST, DELETE',
     preflightContinue: false,
     credentials: true,
-    optionsSuccessStatus: OK,
+    optionsSuccessStatus: NO_CONTENT,
     allowedHeaders: 'X-Requested-With,content-type'
 }));
 
