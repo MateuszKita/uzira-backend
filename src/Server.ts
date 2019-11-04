@@ -22,7 +22,7 @@ app.use(cors({
     origin: '*',
     exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar', 'Access-Control-Allow-Origin'],
     credentials: true,
-    methods: 'GET, PUT, POST, DELETE, PATCH, OPTIONS',
+    methods: 'GET, PUT, POST, DELETE, PATCH, OPTIONS, HEAD',
     allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
 }));
 
