@@ -1,4 +1,4 @@
-import {User} from '../mongoose/user.mongoose';
+import {User} from '../mongoose/users.mongoose';
 import {verify} from 'jsonwebtoken';
 import {NextFunction, Request, Response} from 'express';
 import {UNAUTHORIZED} from 'http-status-codes';

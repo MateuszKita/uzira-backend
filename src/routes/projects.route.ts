@@ -1,22 +1,30 @@
 import {Request, Response, Router} from 'express';
 import {BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND} from 'http-status-codes';
-import {User} from '../mongoose/users.mongoose';
+import {Project} from '../mongoose/projects.mongoose';
 import {IAuthorizedRequest, IUserDTO} from '../models/users.model';
 import {auth} from '../middleware/authorization';
+import {User} from '../mongoose/users.mongoose';
 
 const router = Router();
 
 /******************************************************************************
- *                       Create User - "POST /users/"
+ *                       Create Project - "POST /projects/"
  ******************************************************************************/
 
-router.post('/', async (req: Request, res: Response) => {
-    const user = new User(req.body);
+router.post('/', auth, async (req: Request, res: Response) => {
     try {
-        await user.save();
-        const token = await user.generateAuthToken();
-
-        res.status(CREATED).send({user, token});
+        const user = (req as any as IAuthorizedRequest).user;
+        const project = new Project({
+            ...req.body,
+            users: [
+                {
+                    name: user.name,
+                    id: user._id
+                }
+            ]
+        });
+        await project.save();
+        res.send(project);
     } catch (e) {
         console.error(e);
         res.status(BAD_REQUEST).send(e);
@@ -24,15 +32,16 @@ router.post('/', async (req: Request, res: Response) => {
 });
 
 /******************************************************************************
- *                       Log In - "POST /users/login"
+ *                       Get Projects - "GET /projects/"
  ******************************************************************************/
 
-router.post('/login', async (req: Request, res: Response) => {
+router.post('/', async (req: Request, res: Response) => {
     try {
-        const user = await (User as any).findByCredentials(req.body.email, req.body.password);
+        const project = await Project.find({});
+
         await user.save();
-        const token = await user.generateAuthToken();
-        res.send({user, token});
+
+        res.status(CREATED).send({user, token});
     } catch (e) {
         console.error(e);
         res.status(BAD_REQUEST).send(e);
