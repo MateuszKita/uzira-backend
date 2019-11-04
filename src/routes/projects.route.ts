@@ -38,9 +38,10 @@ router.post('/', auth, async (req: Request, res: Response) => {
  *                       Get Projects - "GET /projects/"
  ******************************************************************************/
 
-router.get('/', async (req: Request, res: Response) => {
+router.get('/', auth, async (req: Request, res: Response) => {
     try {
-        const projects = await Project.find({});
+        const user = (req as any as IAuthorizedRequest).user;
+        const projects = await Project.find({users: {$contains: {id: user._id}}});
         res.send(projects);
     } catch (e) {
         console.error(e);
