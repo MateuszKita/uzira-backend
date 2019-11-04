@@ -10,7 +10,7 @@ import {OK} from 'http-status-codes';
 const app = express();
 
 app.use(cors({
-    origin: 'https://uzira.netlify.com/',
+    origin: 'https://uzira.netlify.com/, http://localhost/',
     methods: 'OPTIONS, GET, HEAD, PUT, PATCH, POST, DELETE',
     preflightContinue: false,
     credentials: true,
