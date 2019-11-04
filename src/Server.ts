@@ -19,7 +19,7 @@ app.use(cors({
         }
         return callback(null, true);
     },
-    exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar'],
+    exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar', 'Access-Control-Allow-Origin'],
     credentials: true,
 }));
 
