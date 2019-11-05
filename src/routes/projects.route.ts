@@ -3,6 +3,8 @@ import {BAD_REQUEST, NOT_FOUND} from 'http-status-codes';
 import {IAuthorizedRequest, IUser} from '../models/users.model';
 import {auth} from '../middleware/authorization';
 import {Project} from '../mongoose/projects.mongoose';
+import {User} from '../mongoose/users.mongoose';
+import {DocumentQuery} from 'mongoose';
 
 const router = Router();
 
@@ -103,19 +105,22 @@ router.get('/:id/users', auth, async (req: Request, res: Response) => {
  *                      Add user to project / Specific User - "POST /projects/:id/users"
  ******************************************************************************/
 
-router.post('/:id/users', auth, async (req: Request, res: Response) => {
+router.post('/:id/users/:userId', auth, async (req: Request, res: Response) => {
     try {
         const projectId = req.params.id;
+        const userId = req.params.userId;
         const user = (req as any as IAuthorizedRequest).user;
         const project = await Project.findOne({_id: projectId, users: {$elemMatch: {innerId: user._id}}});
-        if (project) {
+        const newUser = await User.findOne({_id: userId});
+        if (project && newUser) {
+            const newUserObject: IUser = (newUser as any).toObject();
             const projectUsers: IUser[] = project.toObject().users;
-            const newUsers: IUser[] = [...projectUsers, req.body];
+            const newUsers: IUser[] = [...projectUsers, newUserObject];
             project.update({
                 ...project.toObject,
                 users: newUsers
             });
-            res.send({message: `Updated users by adding user: ${req.body.name}`});
+            res.send({message: `Updated users by adding user: ${newUserObject.name}`});
         } else {
             res.status(NOT_FOUND).send();
         }
