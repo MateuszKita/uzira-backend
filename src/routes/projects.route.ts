@@ -245,10 +245,10 @@ router.get('/:id/backlog', auth, async (req: Request, res: Response) => {
 });
 
 /******************************************************************************
- *                      Add task to project backlog / Specific User - "POST /projects/:id/sprints/"
+ *                      Add task to project backlog / Specific User - "POST /projects/:id/backlog/"
  ******************************************************************************/
 
-router.post('/:id/sprints', auth, async (req: Request, res: Response) => {
+router.post('/:id/backlog', auth, async (req: Request, res: Response) => {
     try {
         const projectId = req.params.id;
         const user = (req as any as IAuthorizedRequest).user;
