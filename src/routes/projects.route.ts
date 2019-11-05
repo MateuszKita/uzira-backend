@@ -43,8 +43,9 @@ router.post('/', auth, async (req: Request, res: Response) => {
 router.get('/', auth, async (req: Request, res: Response) => {
     try {
         const user = (req as any as IAuthorizedRequest).user;
-        let projects: IProject[] = await Project.find({users: {$elemMatch: {innerId: user._id}}});
-        projects = await projects.map((project) => {
+        let projects = await Project.find({users: {$elemMatch: {innerId: user._id}}});
+        projects = projects.map((project) => {
+            project = project.toObject();
             delete project.users;
             delete project.sprints;
             delete project.backlog;
