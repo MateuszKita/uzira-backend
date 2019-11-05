@@ -9,7 +9,7 @@ export const projectSchema: Schema = new Schema({
         trim: true
     },
     sprints: [{
-        innerId: {
+        _id: {
             type: Number,
             required: true
         },
@@ -45,23 +45,11 @@ export const projectSchema: Schema = new Schema({
             type: String,
             required: true,
         },
-        innerId: {
+        _id: {
             type: String,
             required: true,
         }
     }]
-});
-
-// projectSchema.virtual('tasks', {
-//     ref: 'Task',
-//     localField: '_id',
-//     foreignField: 'owner'
-// });
-
-projectSchema.pre('remove', async function(next) {
-    const project = this;
-    // await Task.deleteMany({owner: user._id});
-    next();
 });
 
 export const Project: Model<IProjectDTO> = model('Project', projectSchema);

@@ -22,7 +22,7 @@ router.post('/', auth, async (req: Request, res: Response) => {
                 {
                     email: user.email,
                     name: user.name,
-                    innerId: user._id
+                    _id: user._id
                 }
             ],
             backlog: {
@@ -44,7 +44,7 @@ router.post('/', auth, async (req: Request, res: Response) => {
 router.get('/', auth, async (req: Request, res: Response) => {
     try {
         const user = (req as any as IAuthorizedRequest).user;
-        let projects = await Project.find({users: {$elemMatch: {innerId: user._id}}});
+        let projects = await Project.find({users: {$elemMatch: {_id: user._id}}});
         projects = projects.map((project) => {
             project = project.toObject();
             delete project.users;
@@ -69,7 +69,7 @@ router.delete('/:id', auth, async (req: Request, res: Response) => {
         let project;
         if (projectId) {
             const user = (req as any as IAuthorizedRequest).user;
-            project = await Project.findOneAndDelete({_id: projectId, users: {$elemMatch: {innerId: user._id}}});
+            project = await Project.findOneAndDelete({_id: projectId, users: {$elemMatch: {_id: user._id}}});
         } else {
             throw new Error('No project ID provided in URL parameter');
         }
@@ -88,7 +88,7 @@ router.get('/:id/users', auth, async (req: Request, res: Response) => {
     try {
         const projectId = req.params.id;
         const user = (req as any as IAuthorizedRequest).user;
-        const project = await Project.findOne({_id: projectId, users: {$elemMatch: {innerId: user._id}}});
+        const project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
         if (project) {
             const projectUsers = project.toObject().users;
             res.send(projectUsers);
@@ -110,7 +110,7 @@ router.post('/:id/users/:userId', auth, async (req: Request, res: Response) => {
         const projectId = req.params.id;
         const userId = req.params.userId;
         const user = (req as any as IAuthorizedRequest).user;
-        const project = await Project.findOne({_id: projectId, users: {$elemMatch: {innerId: user._id}}});
+        const project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
         const newUser = await User.findOne({_id: userId});
         if (project && newUser) {
             const newUserObject: IUser = (newUser as any).toObject();
@@ -142,7 +142,7 @@ router.post('/:id/users/:userId', auth, async (req: Request, res: Response) => {
         const projectId = req.params.id;
         const userId = req.params.userId;
         const user = (req as any as IAuthorizedRequest).user;
-        const project = await Project.findOne({_id: projectId, users: {$elemMatch: {innerId: user._id}}});
+        const project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
         if (project) {
             const projectUsers: IUser[] = project.toObject().users;
             const newUsers: IUser[] = projectUsers.filter((projectUser) => projectUser._id !== userId);

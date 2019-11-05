@@ -12,7 +12,7 @@ export interface IUser {
 export interface ISimpleUser {
     email: string;
     name: string;
-    innerId?: ObjectId;
+    _id: ObjectId;
 }
 
 export interface IUserDTO extends IUser, Document {
