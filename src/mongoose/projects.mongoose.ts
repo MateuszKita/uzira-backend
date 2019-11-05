@@ -1,7 +1,6 @@
 import {Schema, Model, model} from 'mongoose';
 import {IProjectDTO} from '../models/projects.model';
 import {GenericTaskSchema, TaskSchema} from './tasks.mongoose';
-import isEmail = require('validator/lib/isEmail');
 
 export const projectSchema: Schema = new Schema({
     name: {
@@ -31,31 +30,24 @@ export const projectSchema: Schema = new Schema({
             default: []
         }
     }],
+    backlog: {
+        tasks: {
+            type: [GenericTaskSchema],
+            default: []
+        }
+    },
     users: [{
         name: {
             type: String,
             required: true,
-            trim: true
         },
         email: {
-            name: {
-                type: String,
-                required: true,
-            },
-            email: {
-                type: String,
-                required: true,
-            },
-            initialId: {
-                type: String,
-                required: true,
-            }
+            type: String,
+            required: true,
         },
-        backlog: {
-            tasks: {
-                type: [GenericTaskSchema],
-                default: []
-            }
+        initialId: {
+            type: String,
+            required: true,
         }
     }]
 });
