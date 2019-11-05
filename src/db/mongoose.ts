@@ -21,7 +21,7 @@ export const connectToMongo = async () => {
                 console.log('MongoDB is connected');
             }).catch((err) => {
                 if (connectionRetries <= maxRetryTimes) {
-                    console.log(`MongoDB connection unsuccessful, retry after ${timeToRetry / 1000} seconds.`, err);
+                    console.error(`MongoDB connection unsuccessful, retry after ${timeToRetry / 1000} seconds.`, err);
                     connectionRetries++;
                     setTimeout(connectWithRetry, timeToRetry);
                 } else {

@@ -43,6 +43,8 @@ router.get('/', auth, async (req: Request, res: Response) => {
     try {
         const user = (req as any as IAuthorizedRequest).user;
         console.log('user id', user._id);
+        console.log('projects', Project.find({}));
+
         const projects = await Project.find({users: {$elemMatch: {initialId: user._id}}});
         res.send(projects);
     } catch (e) {
