@@ -167,7 +167,7 @@ router.post('/:id/users/:userId', auth, async (req: Request, res: Response) => {
  *                      Get sprints belonging to project / Specific User - "GET /projects/:id/sprints"
  ******************************************************************************/
 
-router.get('/:id/users', auth, async (req: Request, res: Response) => {
+router.get('/:id/sprints', auth, async (req: Request, res: Response) => {
     try {
         const projectId = req.params.id;
         const user = (req as any as IAuthorizedRequest).user;
