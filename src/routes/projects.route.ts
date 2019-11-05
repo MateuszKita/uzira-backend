@@ -18,8 +18,9 @@ router.post('/', auth, async (req: Request, res: Response) => {
             sprints: [],
             users: [
                 {
+                    email: user.email,
                     name: user.name,
-                    id: user._id
+                    initialId: user._id
                 }
             ],
             backlog: {
@@ -41,7 +42,8 @@ router.post('/', auth, async (req: Request, res: Response) => {
 router.get('/', auth, async (req: Request, res: Response) => {
     try {
         const user = (req as any as IAuthorizedRequest).user;
-        const projects = await Project.find({users: {$elemMatch: {_id: user._id}}});
+        console.log('user id', user._id);
+        const projects = await Project.find({users: {$elemMatch: {initialId: user._id}}});
         res.send(projects);
     } catch (e) {
         console.error(e);
