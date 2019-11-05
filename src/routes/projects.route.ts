@@ -72,7 +72,7 @@ router.delete('/:id', auth, async (req: Request, res: Response) => {
         } else {
             throw new Error('No project ID provided in URL parameter');
         }
-        res.send(project ? {message: `Successfully deleted project with "${project.name}"`} : 'No project deleted');
+        res.send(project ? {message: `Successfully deleted project with name: ${project.name}`} : 'No project deleted');
     } catch (e) {
         console.error(e);
         res.status(BAD_REQUEST).send(e);
