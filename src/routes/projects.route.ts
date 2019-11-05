@@ -102,7 +102,7 @@ router.get('/:id/users', auth, async (req: Request, res: Response) => {
 });
 
 /******************************************************************************
- *                      Add user to project / Specific User - "POST /projects/:id/users"
+ *                      Add user to project / Specific User - "POST /projects/:id/users/:userId"
  ******************************************************************************/
 
 router.post('/:id/users/:userId', auth, async (req: Request, res: Response) => {
@@ -134,44 +134,33 @@ router.post('/:id/users/:userId', auth, async (req: Request, res: Response) => {
 });
 
 /******************************************************************************
- *                       Update User - "PATCH /users/:id"
+ *                      Remove user from project / Specific User - "DELETE /projects/:id/users/:userId"
  ******************************************************************************/
 
-// router.patch('/:id', auth, async (req: Request, res: Response) => {
-//     const updates = Object.keys(req.body).length > 0 ? Object.keys(req.body) : [];
-//     const allowedUpdates = ['name', 'email', 'password', 'age'];
-//     const isValidOperation = updates.every((update) => allowedUpdates.includes(update)) && updates.length > 0;
-//
-//     if (!isValidOperation) {
-//         return res.status(BAD_REQUEST).send({error: 'Invalid updates!'});
-//     }
-//
-//     try {
-//         const authorizedUser: IUserDTO = (req as any as IAuthorizedRequest).user;
-//         if (authorizedUser) {
-//             updates.forEach((update) => (authorizedUser as any)[update] = req.body[update]);
-//             await authorizedUser.save();
-//         } else {
-//             return res.status(NOT_FOUND).send();
-//         }
-//         res.send(authorizedUser);
-//     } catch (e) {
-//         res.status(BAD_REQUEST).send(e);
-//     }
-// });
-
-/******************************************************************************
- *                    Delete - "DELETE /users/:id"
- ******************************************************************************/
-
-// router.delete('/me', auth, async (req: Request, res: Response) => {
-//     try {
-//         const authorizedUser: IUserDTO = (req as any as IAuthorizedRequest).user;
-//         await authorizedUser.remove();
-//         res.send(authorizedUser);
-//     } catch (e) {
-//         res.status(INTERNAL_SERVER_ERROR).send();
-//     }
-// });
+router.post('/:id/users/:userId', auth, async (req: Request, res: Response) => {
+    try {
+        const projectId = req.params.id;
+        const userId = req.params.userId;
+        const user = (req as any as IAuthorizedRequest).user;
+        const project = await Project.findOne({_id: projectId, users: {$elemMatch: {innerId: user._id}}});
+        if (project) {
+            const projectUsers: IUser[] = project.toObject().users;
+            const newUsers: IUser[] = projectUsers.filter((projectUser) => projectUser._id !== userId);
+            await project.update({
+                ...project.toObject(),
+                users: newUsers
+            });
+            await project.save();
+            res.send({
+                message: `Removed user from project \'${project.toObject().name}\'`
+            });
+        } else {
+            res.status(NOT_FOUND).send();
+        }
+    } catch (e) {
+        console.error(e);
+        res.status(BAD_REQUEST).send(e);
+    }
+});
 
 export default router;
