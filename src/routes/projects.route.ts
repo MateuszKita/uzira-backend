@@ -1,9 +1,8 @@
 import {Request, Response, Router} from 'express';
-import {BAD_REQUEST} from 'http-status-codes';
-import {IAuthorizedRequest} from '../models/users.model';
+import {BAD_REQUEST, NOT_FOUND} from 'http-status-codes';
+import {IAuthorizedRequest, IUser} from '../models/users.model';
 import {auth} from '../middleware/authorization';
 import {Project} from '../mongoose/projects.mongoose';
-import {IProject} from '../models/projects.model';
 
 const router = Router();
 
@@ -78,40 +77,53 @@ router.delete('/:id', auth, async (req: Request, res: Response) => {
         res.status(BAD_REQUEST).send(e);
     }
 });
-/******************************************************************************
- *                      Log out User / Specific User - "POST /users/logout?"
- ******************************************************************************/
-
-// router.post('/logout', auth, async (req: Request, res: Response) => {
-//     try {
-//         const authorizedRequest: IAuthorizedRequest = (req as any as IAuthorizedRequest);
-//         authorizedRequest.user.tokens = authorizedRequest.user.tokens.filter((token) => {
-//             return token.token !== authorizedRequest.token;
-//         });
-//         await authorizedRequest.user.save();
-//
-//         res.send();
-//     } catch (e) {
-//         console.error(e);
-//         res.status(INTERNAL_SERVER_ERROR).send(e);
-//     }
-// });
 
 /******************************************************************************
- *                      Log all User everywhere - "POST /users/logoutAll?"
+ *                      Get users belonging to project / Specific User - "GET /projects/:id/users"
  ******************************************************************************/
 
-// router.post('/logoutAll', auth, async (req: Request, res: Response) => {
-//     try {
-//         const authorizedRequest: IAuthorizedRequest = (req as any as IAuthorizedRequest);
-//         authorizedRequest.user.tokens = [];
-//         await authorizedRequest.user.save();
-//         res.send();
-//     } catch (e) {
-//         console.error(e);
-//         res.status(INTERNAL_SERVER_ERROR).send(e);
-//     }
-// });
+router.get('/:id/users', auth, async (req: Request, res: Response) => {
+    try {
+        const projectId = req.params.id;
+        const user = (req as any as IAuthorizedRequest).user;
+        const project = await Project.findOne({_id: projectId, users: {$elemMatch: {innerId: user._id}}});
+        if (project) {
+            const projectUsers = project.toObject().users;
+            res.send(projectUsers);
+        } else {
+            res.status(NOT_FOUND).send();
+        }
+    } catch (e) {
+        console.error(e);
+        res.status(BAD_REQUEST).send(e);
+    }
+});
+
+/******************************************************************************
+ *                      Add user to project / Specific User - "POST /projects/:id/users"
+ ******************************************************************************/
+
+router.post('/:id/users', auth, async (req: Request, res: Response) => {
+    try {
+        const projectId = req.params.id;
+        const user = (req as any as IAuthorizedRequest).user;
+        const project = await Project.findOne({_id: projectId, users: {$elemMatch: {innerId: user._id}}});
+        if (project) {
+            const projectUsers: IUser[] = project.toObject().users;
+            const newUsers: IUser[] = [...projectUsers, req.body];
+            project.update({
+                ...project.toObject,
+                users: newUsers
+            });
+            res.send({message: `Updated users by adding user: ${req.body.name}`});
+        } else {
+            res.status(NOT_FOUND).send();
+        }
+    } catch (e) {
+        console.error(e);
+        res.status(BAD_REQUEST).send(e);
+    }
+});
 
 /******************************************************************************
  *                       Update User - "PATCH /users/:id"
