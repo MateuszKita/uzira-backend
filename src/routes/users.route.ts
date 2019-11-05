@@ -48,6 +48,15 @@ router.get('/me', auth, async (req: Request, res: Response) => {
 });
 
 /******************************************************************************
+ *                      Get all users simple list / Specific User - "GET /users/"
+ ******************************************************************************/
+
+router.get('/', auth, async (req: Request, res: Response) => {
+    const users = User.find({});
+    res.send(users);
+});
+
+/******************************************************************************
  *                      Log out User / Specific User - "POST /users/logout?"
  ******************************************************************************/
 
