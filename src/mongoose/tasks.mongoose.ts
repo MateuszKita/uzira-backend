@@ -31,10 +31,6 @@ export const GenericTaskSchema: Schema = new Schema({
 });
 
 export const TaskSchema: Schema = new Schema({
-    id: {
-        type: String,
-        required: true,
-    },
     name: {
         type: String,
         required: true

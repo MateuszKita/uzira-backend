@@ -45,7 +45,7 @@ export const projectSchema: Schema = new Schema({
             type: String,
             required: true,
         },
-        initialId: {
+        innderId: {
             type: String,
             required: true,
         }

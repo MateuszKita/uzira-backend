@@ -3,6 +3,7 @@ import {BAD_REQUEST} from 'http-status-codes';
 import {IAuthorizedRequest} from '../models/users.model';
 import {auth} from '../middleware/authorization';
 import {Project} from '../mongoose/projects.mongoose';
+import {IProject} from '../models/projects.model';
 
 const router = Router();
 
@@ -20,7 +21,7 @@ router.post('/', auth, async (req: Request, res: Response) => {
                 {
                     email: user.email,
                     name: user.name,
-                    initialId: user._id
+                    innerId: user._id
                 }
             ],
             backlog: {
@@ -42,10 +43,13 @@ router.post('/', auth, async (req: Request, res: Response) => {
 router.get('/', auth, async (req: Request, res: Response) => {
     try {
         const user = (req as any as IAuthorizedRequest).user;
-        console.log('user id', user._id);
-        console.log('projects', Project.find({}));
-
-        const projects = await Project.find({users: {$elemMatch: {initialId: user._id}}});
+        let projects: IProject[] = await Project.find({users: {$elemMatch: {innerId: user._id}}});
+        projects = projects.map((project) => {
+            delete project.users;
+            delete project.sprints;
+            delete project.backlog;
+            return project;
+        });
         res.send(projects);
     } catch (e) {
         console.error(e);

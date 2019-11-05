@@ -9,6 +9,12 @@ export interface IUser {
     tokens: IUserToken[];
 }
 
+export interface ISimpleUser {
+    innerId: ObjectId;
+    email: string;
+    name: string;
+}
+
 export interface IUserDTO extends IUser, Document {
     generateAuthToken(): () => string;
 }
