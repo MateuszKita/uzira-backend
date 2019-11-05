@@ -44,7 +44,7 @@ router.get('/', auth, async (req: Request, res: Response) => {
     try {
         const user = (req as any as IAuthorizedRequest).user;
         let projects: IProject[] = await Project.find({users: {$elemMatch: {innerId: user._id}}});
-        projects = projects.map((project) => {
+        projects = await projects.map((project) => {
             delete project.users;
             delete project.sprints;
             delete project.backlog;
