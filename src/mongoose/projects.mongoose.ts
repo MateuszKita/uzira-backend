@@ -7,36 +7,36 @@ export const projectSchema: Schema = new Schema({
         required: true,
         trim: true
     },
-    sprints: [{
-        innerId: {
-            type: Number,
-            required: true
-        },
-        active: {
-            type: Boolean,
-            required: true,
-        },
-        startDate: {
-            type: Date,
-            required: true
-        },
-        endDate: {
-            type: Date,
-            required: true
-        },
+    // sprints: [{
+    //     innerId: {
+    //         type: Number,
+    //         required: true
+    //     },
+    //     active: {
+    //         type: Boolean,
+    //         required: true,
+    //     },
+    //     startDate: {
+    //         type: Date,
+    //         required: true
+    //     },
+    //     endDate: {
+    //         type: Date,
+    //         required: true
+    //     },
         // tasks: ['Task']
-    }],
-    users: [{
-        name: {
-            type: String,
-            required: true,
-            trim: true
-        },
-        id: {
-            type: String,
-            required: true,
-        }
-    }],
+    // }],
+    // users: [{
+    //     name: {
+    //         type: String,
+    //         required: true,
+    //         trim: true
+    //     },
+    //     id: {
+    //         type: String,
+    //         required: true,
+    //     }
+    // }],
     // backlog: {
         // tasks: ['GenericTask']
     // }

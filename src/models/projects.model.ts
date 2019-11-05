@@ -6,5 +6,4 @@ export interface IProject {
 }
 
 export interface IProjectDTO extends IProject, Document {
-    generateAuthToken(): () => string;
 }
