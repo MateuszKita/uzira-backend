@@ -24,7 +24,7 @@ export const projectSchema: Schema = new Schema({
             type: Date,
             required: true
         },
-        tasks: ['Task']
+        // tasks: ['Task']
     }],
     users: [{
         name: {
@@ -37,9 +37,9 @@ export const projectSchema: Schema = new Schema({
             required: true,
         }
     }],
-    backlog: {
-        tasks: ['GenericTask']
-    }
+    // backlog: {
+        // tasks: ['GenericTask']
+    // }
 });
 
 // projectSchema.virtual('tasks', {
