@@ -7,7 +7,7 @@ import bodyParser from 'body-parser';
 
 const app = express();
 
-const allowedOrigins = ['https://uzira.netlify.com/', 'http://localhost:3000'];
+const allowedOrigins = ['https://uzira.netlify.com/', 'http://localhost:4200'];
 
 app.use(cors({
     origin: (origin, callback) => {
