@@ -52,7 +52,7 @@ router.get('/me', auth, async (req: Request, res: Response) => {
  ******************************************************************************/
 
 router.get('/', auth, async (req: Request, res: Response) => {
-    const users = User.find({});
+    const users = await User.find({});
     res.send(users);
 });
 
