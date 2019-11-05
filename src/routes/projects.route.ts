@@ -256,6 +256,7 @@ router.post('/:id/backlog', auth, async (req: Request, res: Response) => {
         if (project) {
             const projectBacklog: IProjectBacklog = project.toObject().backlog;
             const taskObject: ITask = req.body;
+            taskObject.projectId = projectId;
             const task = new Task(taskObject);
             await task.save();
             const taskWithId: ITask = (await Task.findOne(taskObject) as any).toObject();

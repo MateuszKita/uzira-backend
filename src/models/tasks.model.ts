@@ -7,7 +7,7 @@ export interface ITask {
     type: string;
     estimation: number;
     assigned: ISimpleUser;
-    sprintId: string;
+    projectId: string;
     description: string;
     subtasks?: ITask;
     parent?: ITask;
