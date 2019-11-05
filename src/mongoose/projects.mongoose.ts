@@ -36,10 +36,6 @@ export const projectSchema: Schema = new Schema({
             required: true,
             trim: true
         },
-        id: {
-            type: String,
-            required: true,
-        }
     }],
     backlog: {
         tasks: {
