@@ -5,6 +5,6 @@ import ProjectRouter from './projects.route';
 const router = Router();
 
 router.use('/users', UserRouter);
-router.use('/projects', ProjectRouter);
+// router.use('/projects', ProjectRouter);
 
 export default router;
