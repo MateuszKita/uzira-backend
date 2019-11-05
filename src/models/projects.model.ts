@@ -19,5 +19,9 @@ export interface ISimpleProject {
     name: string;
 }
 
+export interface IProjectBacklog {
+    tasks: ITask[];
+}
+
 export interface IProjectDTO extends IProject, Document {
 }

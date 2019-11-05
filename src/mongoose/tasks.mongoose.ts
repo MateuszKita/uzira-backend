@@ -37,17 +37,25 @@ export const TaskSchema: Schema = new Schema({
     },
     type: {
         type: String,
-        required: true
+        required: true,
+        default: 'Task'
     },
     estimation: {
         type: Number,
-        required: false
+        required: false,
+        default: 0
     },
     assigned: {
-        type: Number
+        type: Number,
+        default: null
+    },
+    projectId: {
+        type: String,
+        required: true
     },
     sprint: {
-        type: String
+        type: String,
+        default: null
     },
     description: {
         type: String,
@@ -64,4 +72,3 @@ export const TaskSchema: Schema = new Schema({
 });
 
 export const Task: Model<IProjectDTO> = model('Task', TaskSchema);
-export const GenericTask: Model<IProjectDTO> = model('GenericTask', GenericTaskSchema);
