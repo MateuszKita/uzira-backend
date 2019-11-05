@@ -32,7 +32,7 @@ export const projectSchema: Schema = new Schema({
     }],
     backlog: {
         tasks: {
-            type: [GenericTaskSchema],
+            type: [TaskSchema],
             default: []
         }
     },

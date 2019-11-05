@@ -1,7 +1,7 @@
 import {Schema, Model, model} from 'mongoose';
 import {IProjectDTO} from '../models/projects.model';
 
-export const GenericTaskSchema: Schema = new Schema({
+const GenericTaskSchema: Schema = new Schema({
     id: {
         type: String,
         required: true,
