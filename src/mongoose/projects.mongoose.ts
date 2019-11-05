@@ -9,7 +9,7 @@ export const projectSchema: Schema = new Schema({
         trim: true
     },
     sprints: [{
-        _id: {
+        index: {
             type: Number,
             required: true
         },
