@@ -1,6 +1,6 @@
 import {Schema, Model, model} from 'mongoose';
 import {IProjectDTO} from '../models/projects.model';
-import {GenericTaskSchema, TaskSchema} from './tasks.mongoose';
+import {TaskSchema} from './tasks.mongoose';
 
 export const projectSchema: Schema = new Schema({
     name: {
