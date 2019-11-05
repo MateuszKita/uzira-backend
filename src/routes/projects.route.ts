@@ -116,11 +116,14 @@ router.post('/:id/users/:userId', auth, async (req: Request, res: Response) => {
             const newUserObject: IUser = (newUser as any).toObject();
             const projectUsers: IUser[] = project.toObject().users;
             const newUsers: IUser[] = [...projectUsers, newUserObject];
-            project.update({
+            await project.update({
                 ...project.toObject(),
                 users: newUsers
             });
-            res.send({message: `Updated project by adding user: ${newUserObject.name}`});
+            await project.save();
+            res.send({
+                message: `Updated project \'${project.toObject().name}\' by adding user: \'${newUserObject.name}\'`
+            });
         } else {
             res.status(NOT_FOUND).send();
         }
