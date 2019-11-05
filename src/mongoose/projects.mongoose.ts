@@ -37,31 +37,20 @@ export const projectSchema: Schema = new Schema({
             required: true,
             trim: true
         },
-        email: [{
+        email: {
             name: {
                 type: String,
                 required: true,
-                trim: true
             },
             email: {
                 type: String,
-                unique: true,
                 required: true,
-                trim: true,
-                lowercase: true,
-                validate(value: string) {
-                    const emailIsValid = isEmail(value);
-                    if (!emailIsValid) {
-                        throw new Error('Email is invalid');
-                    }
-                    return emailIsValid;
-                }
             },
             initialId: {
                 type: String,
-                unique: true
+                required: true,
             }
-        }],
+        },
         backlog: {
             tasks: {
                 type: [GenericTaskSchema],
