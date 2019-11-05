@@ -58,13 +58,25 @@ router.get('/', auth, async (req: Request, res: Response) => {
 });
 
 /******************************************************************************
- *                      Get info about User / Specific User - "GET /users/me"
+ *                      Remove Specific Project - "DELETE /projects/:id"
  ******************************************************************************/
 
-// router.get('/me', auth, async (req: Request, res: Response) => {
-//     res.send((req as any as IAuthorizedRequest).user);
-// });
-
+router.delete('/:id', auth, async (req: Request, res: Response) => {
+    try {
+        const projectId = req.params.id;
+        let project;
+        if (projectId) {
+            const user = (req as any as IAuthorizedRequest).user;
+            project = await Project.findOneAndDelete({_id: projectId, users: {$elemMatch: {innerId: user._id}}});
+        } else {
+            throw new Error('No project ID provided in URL parameter');
+        }
+        res.send(project ? {message: `Successfully deleted project with "${project.name}"`} : 'No project deleted');
+    } catch (e) {
+        console.error(e);
+        res.status(BAD_REQUEST).send(e);
+    }
+});
 /******************************************************************************
  *                      Log out User / Specific User - "POST /users/logout?"
  ******************************************************************************/
