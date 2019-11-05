@@ -10,9 +10,9 @@ export interface IUser {
 }
 
 export interface ISimpleUser {
-    innerId: ObjectId;
     email: string;
     name: string;
+    innerId?: ObjectId;
 }
 
 export interface IUserDTO extends IUser, Document {
