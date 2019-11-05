@@ -5,7 +5,7 @@ import {JWT_KEY} from '../shared/constants';
 import {sign} from 'jsonwebtoken';
 import {IUserDTO} from '../models/users.model';
 
-export const userSchema: Schema = new Schema({
+export const UserSchema: Schema = new Schema({
     name: {
         type: String,
         required: true,
@@ -46,13 +46,13 @@ export const userSchema: Schema = new Schema({
     }]
 });
 
-// userSchema.virtual('tasks', {
+// UserSchema.virtual('tasks', {
 //     ref: 'Task',
 //     localField: '_id',
 //     foreignField: 'owner'
 // });
 
-userSchema.pre('save', async function(next) {
+UserSchema.pre('save', async function(next) {
     const user = this as IUserDTO;
     if (user.isModified('password')) {
         user.password = await hash(user.password, 8);
@@ -60,13 +60,13 @@ userSchema.pre('save', async function(next) {
     next();
 });
 
-userSchema.pre('remove', async function(next) {
+UserSchema.pre('remove', async function(next) {
     const user = this;
     // await Task.deleteMany({owner: user._id});
     next();
 });
 
-userSchema.methods.toJSON = function() {
+UserSchema.methods.toJSON = function() {
     const user = this;
     const userObject = user.toObject();
 
@@ -76,7 +76,7 @@ userSchema.methods.toJSON = function() {
     return userObject;
 };
 
-userSchema.methods.generateAuthToken = async function() {
+UserSchema.methods.generateAuthToken = async function() {
     const user = this;
     const token = sign({_id: user._id.toString()}, JWT_KEY);
 
@@ -86,7 +86,7 @@ userSchema.methods.generateAuthToken = async function() {
     return token;
 };
 
-userSchema.statics.findByCredentials = async (email: string, password: string) => {
+UserSchema.statics.findByCredentials = async (email: string, password: string) => {
     const user = await User.findOne({email});
 
     if (!user) {
@@ -102,4 +102,4 @@ userSchema.statics.findByCredentials = async (email: string, password: string) =
     return user;
 };
 
-export const User: Model<IUserDTO> = model('User', userSchema);
+export const User: Model<IUserDTO> = model('User', UserSchema);

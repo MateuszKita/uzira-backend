@@ -1,5 +1,6 @@
 import {Schema, Model, model} from 'mongoose';
 import {IProjectDTO} from '../models/projects.model';
+import {GenericTaskSchema, TaskSchema} from './tasks.mongoose';
 
 export const projectSchema: Schema = new Schema({
     name: {
@@ -24,7 +25,10 @@ export const projectSchema: Schema = new Schema({
             type: Date,
             required: true
         },
-        tasks: ['Task']
+        tasks: {
+            type: [TaskSchema],
+            default: []
+        }
     }],
     users: [{
         name: {
@@ -38,7 +42,10 @@ export const projectSchema: Schema = new Schema({
         }
     }],
     backlog: {
-        tasks: ['GenericTask']
+        tasks: {
+            type: [GenericTaskSchema],
+            default: []
+        }
     }
 });
 
