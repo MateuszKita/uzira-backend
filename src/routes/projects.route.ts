@@ -2,7 +2,7 @@ import {Request, Response, Router} from 'express';
 import {BAD_REQUEST} from 'http-status-codes';
 import {IAuthorizedRequest} from '../models/users.model';
 import {auth} from '../middleware/authorization';
-import {Project} from 'src/mongoose/projects.mongoose';
+import {Project} from '../mongoose/projects.mongoose';
 
 const router = Router();
 
