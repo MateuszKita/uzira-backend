@@ -15,7 +15,7 @@ app.use(cors({
         if (!origin) {
             return callback(null, true);
         }
-        if (allowedOrigins.some((allowedOrigin) => origin.match(allowedOrigin))) {
+        if (allowedOrigins.some((allowedOrigin) => !origin.match(allowedOrigin))) {
             const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
             return callback(new Error(msg), false);
         }
