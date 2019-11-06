@@ -11,11 +11,11 @@ const allowedOrigins = ['https://uzira.netlify.com', 'http://localhost:4200'];
 
 app.use(cors({
     origin: (origin, callback) => {
-        console.log(111111111111111111, origin);
+        console.log(111111111111111111, origin, allowedOrigins.findIndex((allowedOrigin) => origin === allowedOrigin));
         if (!origin) {
             return callback(null, true);
         }
-        if (allowedOrigins.some((allowedOrigin) => !origin.match(allowedOrigin))) {
+        if (allowedOrigins.findIndex((allowedOrigin) => origin === allowedOrigin) === -1) {
             const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
             return callback(new Error(msg), false);
         }
