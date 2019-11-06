@@ -37,7 +37,7 @@ connectToMongo().then(() => {
     console.log('SUCCESS: Connected to MongoDB');
 });
 
-const fiveMinutesMilliseconds = 300000;
+const intervalMilliseconds = 1000 * 60 * 20;
 
 setInterval(() => {
     const hour = new Date().getHours();
@@ -45,6 +45,6 @@ setInterval(() => {
     if (hour > 6 && hour < 23) {
         http.get(appUrl);
     }
-}, fiveMinutesMilliseconds);
+}, intervalMilliseconds);
 
 export default app;
