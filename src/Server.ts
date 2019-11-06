@@ -4,6 +4,7 @@ import {connectToMongo} from './db/mongoose';
 import cors from 'cors';
 import cookieParser = require('cookie-parser');
 import bodyParser from 'body-parser';
+import http from 'http';
 
 const app = express();
 
@@ -36,11 +37,14 @@ connectToMongo().then(() => {
     console.log('SUCCESS: Connected to MongoDB');
 });
 
+const fiveMinutesMilliseconds = 300000;
+
 setInterval(() => {
-    // http.get("http://<your app name>.herokuapp.com");
-    const date = new Date();
-    console.log(date.getHours());
-    console.log(date.getUTCHours());
-}, 5000); // every 5 minutes (300000)
+    const hour = new Date().getHours();
+    const appUrl = 'https://uzira-backend-nodejs.herokuapp.com/';
+    if (hour > 6 && hour < 23) {
+        http.get(appUrl);
+    }
+}, fiveMinutesMilliseconds);
 
 export default app;
