@@ -36,4 +36,11 @@ connectToMongo().then(() => {
     console.log('SUCCESS: Connected to MongoDB');
 });
 
+setInterval(() => {
+    // http.get("http://<your app name>.herokuapp.com");
+    const date = new Date();
+    console.log(date.getHours());
+    console.log(date.getUTCHours());
+}, 5000); // every 5 minutes (300000)
+
 export default app;
