@@ -14,6 +14,10 @@ const GenericTaskSchema: Schema = new Schema({
         type: String,
         required: true
     },
+    status: {
+        type: String,
+        required: true
+    },
     estimation: {
         type: Number,
         required: false
@@ -39,6 +43,10 @@ export const TaskSchema: Schema = new Schema({
         type: String,
         required: true,
         default: 'Task'
+    },
+    status: {
+        type: String,
+        required: true
     },
     estimation: {
         type: Number,
