@@ -7,7 +7,7 @@ import bodyParser from 'body-parser';
 
 const app = express();
 
-const allowedOrigins = ['https://uzira.netlify.com/', 'http://localhost:4200'];
+const allowedOrigins = ['https://uzira.netlify.com', 'http://localhost:4200'];
 
 app.use(cors({
     origin: (origin, callback) => {
@@ -15,7 +15,7 @@ app.use(cors({
         if (!origin) {
             return callback(null, true);
         }
-        if (allowedOrigins.indexOf(origin) === -1) {
+        if (allowedOrigins.some((allowedOrigin) => origin.match(allowedOrigin))) {
             const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
             return callback(new Error(msg), false);
         }
