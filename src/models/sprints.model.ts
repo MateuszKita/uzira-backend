@@ -1,4 +1,5 @@
 import {ITask} from './tasks.model';
+import {ObjectId} from 'mongodb';
 
 export interface ISprint {
     _id: ObjectId;
