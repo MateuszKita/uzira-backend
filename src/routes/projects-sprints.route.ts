@@ -138,7 +138,11 @@ router.patch('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Re
             sprints: newSprintsList
         });
         await project.save();
+
+        console.log(1111111111111111111111111, project.toObject());
+
         res.send({message: `Sprint ${sprint.index} updated!`});
+
     } catch (e) {
         console.error(e);
         res.status(BAD_REQUEST).send(e);
