@@ -1,10 +1,11 @@
 import {Document} from 'mongoose';
+import {ObjectId} from 'mongodb';
 import {ITask} from './tasks.model';
 import {ISprint} from './sprints.model';
 import {ISimpleUser} from './users.model';
 
 export interface IProject {
-    _id: string | any;
+    _id: ObjectId | any;
     backlog: {
         tasks: ITask[];
     };
