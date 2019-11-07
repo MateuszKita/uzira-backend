@@ -78,7 +78,7 @@ router.get('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Resp
             return res.status(NOT_FOUND).send('Could not find project with given ID');
         }
 
-        const sprint = (project.toObject().sprints as ISprint[]).find((projectSprint: ISprint) => projectSprint._id === sprintId);
+        const sprint = await (project.toObject().sprints as ISprint[]).find((projectSprint: ISprint) => projectSprint._id === sprintId);
 
         return sprint
             ? res.send(sprint)

@@ -1,4 +1,3 @@
-import {ObjectId} from 'mongodb';
 import {Document} from 'mongoose';
 import {ITask} from './tasks.model';
 import {ISprint} from './sprints.model';
@@ -12,11 +11,6 @@ export interface IProject {
     name: string;
     sprints: ISprint[];
     users: ISimpleUser[];
-}
-
-export interface ISimpleProject {
-    _id: string | any;
-    name: string;
 }
 
 export interface IProjectBacklog {
