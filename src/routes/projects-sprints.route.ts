@@ -96,11 +96,49 @@ router.get('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Resp
  ******************************************************************************/
 
 router.patch('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Response) => {
+    const updates = Object.keys(req.body).length > 0 ? Object.keys(req.body) : [];
+    const allowedUpdates = ['name', 'email', 'password', 'age'];
+    const isValidOperation = updates.every((update) => allowedUpdates.includes(update)) && updates.length > 0;
+
     try {
         const user = (req as any as IAuthorizedRequest).user;
         const {projectId, sprintId} = req.params;
 
-        res.send();
+        if (!isValidOperation) {
+            return res.status(BAD_REQUEST).send({error: 'Invalid updates!'});
+        }
+
+        const project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
+
+        if (!project) {
+            return res.status(NOT_FOUND).send('Could not find project with given ID');
+        }
+
+        let sprintIndex = 0;
+        const sprint: ISprint | undefined = (project.toObject().sprints as ISprint[])
+            .find((projectSprint: ISprint, index) => {
+                if (projectSprint._id.toHexString() === sprintId) {
+                    sprintIndex = index;
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+
+        if (!sprint) {
+            return res.status(NOT_FOUND).send('Could not find sprint with given ID');
+        }
+
+        const newSprintsList: ISprint[] = project.toObject().sprints;
+        updates.forEach((update) => sprint[update] = req.body[update]);
+        newSprintsList.splice(sprintIndex, 1, sprint);
+
+        await project.update({
+            ...project.toObject(),
+            sprints: newSprintsList
+        });
+        await project.save();
+        res.send({message: `Sprint ${sprint.index} updated!`});
     } catch (e) {
         console.error(e);
         res.status(BAD_REQUEST).send(e);

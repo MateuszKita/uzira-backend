@@ -8,4 +8,6 @@ export interface ISprint {
     startDate: string;
     endDate: string;
     tasks: ITask[];
+
+    [key: string]: ObjectId | number | boolean | string | ITask[];
 }
