@@ -196,14 +196,6 @@ router.post('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Res
         const project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
 
         if (project) {
-            const taskObject: ITask = req.body;
-            taskObject.projectId = projectId;
-            taskObject.status = 'open';
-            taskObject.sprint = project._id;
-            const task = new Task(taskObject);
-            await task.save();
-            const taskWithId: ITask = (await Task.findOne(taskObject) as any).toObject();
-
             let sprintIndex = -1;
             const sprint = (project.toObject().sprints as ISprint[])
                 .find((projectSprint: ISprint, index) => {
@@ -216,6 +208,14 @@ router.post('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Res
                 });
 
             if (sprint) {
+                const taskObject: ITask = req.body;
+                taskObject.projectId = projectId;
+                taskObject.status = 'open';
+                taskObject.sprint = sprintId;
+                const task = new Task(taskObject);
+                await task.save();
+                const taskWithId: ITask = (await Task.findOne(taskObject) as any).toObject();
+
                 sprint.tasks = [...sprint.tasks, taskWithId];
 
                 const newSprints: ISprint[] = project.toObject().sprints;

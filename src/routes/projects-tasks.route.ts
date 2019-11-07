@@ -42,7 +42,7 @@ router.get('/:projectId/tasks/:taskId', auth, async (req: Request, res: Response
             if (sprintIndexWithTask > -1) {
                 res.send((project.toObject().sprints)[sprintIndexWithTask].tasks[taskIdInSprint]);
             } else {
-                return res.status(NOT_FOUND).send('Could not find task with given ID');
+                res.status(NOT_FOUND).send('Could not find task with given ID');
             }
         }
     } catch (e) {
@@ -52,14 +52,51 @@ router.get('/:projectId/tasks/:taskId', auth, async (req: Request, res: Response
 });
 
 /******************************************************************************
- *                      Update task details / Specific User - "GET /projects/:projectId/tasks/:taskId"
+ *                      Update task details / Specific User - "PATCH /projects/:projectId/tasks/:taskId"
  ******************************************************************************/
 
 router.patch('/:projectId/tasks/:taskId', auth, async (req: Request, res: Response) => {
     try {
         const {projectId, taskId} = req.params;
+        const user = (req as any as IAuthorizedRequest).user;
+        const project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
+        if (!project) {
+            return res.status(NOT_FOUND).send('Could not find project with given ID');
+        }
 
-        res.send();
+        const taskIndexInBacklog = project.toObject().backlog.tasks
+            .findIndex((task: ITask) => task._id.toHexString() === taskId);
+
+        if (taskIndexInBacklog > -1) {
+            const newBacklogTasks: ITask[] = project.toObject().backlog.tasks;
+            newBacklogTasks.splice(taskIndexInBacklog, 1);
+            await project.update({
+                ...project.toObject(),
+                backlog: {
+                    tasks: newBacklogTasks
+                }
+            });
+            await project.save();
+            res.send('Successfully removed task from sprint backlog');
+        } else {
+            let taskIdInSprint = -1;
+            const sprintIndexWithTask = project.toObject().sprints
+                .findIndex((sprint: any) => sprint.tasks
+                    .some((task: ITask, index: number) => {
+                        if (task._id.toHexString() === taskId) {
+                            taskIdInSprint = index;
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    })
+                );
+            if (sprintIndexWithTask > -1) {
+                res.send((project.toObject().sprints)[sprintIndexWithTask].tasks[taskIdInSprint]);
+            } else {
+                return res.status(NOT_FOUND).send('Could not find task with given ID');
+            }
+        }
     } catch (e) {
         console.error(e);
         res.status(BAD_REQUEST).send(e);
@@ -73,8 +110,52 @@ router.patch('/:projectId/tasks/:taskId', auth, async (req: Request, res: Respon
 router.delete('/:projectId/tasks/:taskId', auth, async (req: Request, res: Response) => {
     try {
         const {projectId, taskId} = req.params;
+        const user = (req as any as IAuthorizedRequest).user;
+        const project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
+        if (!project) {
+            return res.status(NOT_FOUND).send('Could not find project with given ID');
+        }
 
-        res.send();
+        const taskIndexInBacklog = project.toObject().backlog.tasks
+            .findIndex((task: ITask) => task._id.toHexString() === taskId);
+
+        if (taskIndexInBacklog > -1) {
+            const newBacklogTasks: ITask[] = project.toObject().backlog.tasks;
+            newBacklogTasks.splice(taskIndexInBacklog, 1);
+            await project.update({
+                ...project.toObject(),
+                backlog: {
+                    tasks: newBacklogTasks
+                }
+            });
+            await project.save();
+            res.send('Successfully removed task from sprint backlog');
+        } else {
+            let taskIdInSprint = -1;
+            const sprintIndexWithTask = project.toObject().sprints
+                .findIndex((sprint: any) => sprint.tasks
+                    .some((task: ITask, index: number) => {
+                        if (task._id.toHexString() === taskId) {
+                            taskIdInSprint = index;
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    })
+                );
+            if (sprintIndexWithTask > -1) {
+                const newSprints: ISprint[] = project.toObject().sprints;
+                newSprints[sprintIndexWithTask].tasks.splice(sprintIndexWithTask, 1);
+                await project.update({
+                    ...project.toObject(),
+                    sprints: newSprints
+                });
+                await project.save();
+                res.send(`Successfully removed task from Sprint ${newSprints[sprintIndexWithTask].index}`);
+            } else {
+                return res.status(NOT_FOUND).send('Could not find task with given ID');
+            }
+        }
     } catch (e) {
         console.error(e);
         res.status(BAD_REQUEST).send(e);
