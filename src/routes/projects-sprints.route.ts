@@ -8,12 +8,12 @@ import {ISprint} from '../models/sprints.model';
 const router = Router();
 
 /******************************************************************************
- *                      Get sprints belonging to project / Specific User - "GET /projects/:id/sprints"
+ *                      Get sprints belonging to project / Specific User - "GET /projects/:projectId/sprints"
  ******************************************************************************/
 
-router.get('/:id/sprints', auth, async (req: Request, res: Response) => {
+router.get('/:projectId/sprints', auth, async (req: Request, res: Response) => {
     try {
-        const projectId = req.params.id;
+        const projectId = req.params.projectId;
         const user = (req as any as IAuthorizedRequest).user;
         const project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
         if (project) {
@@ -29,12 +29,12 @@ router.get('/:id/sprints', auth, async (req: Request, res: Response) => {
 });
 
 /******************************************************************************
- *                      Add sprint to project / Specific User - "POST /projects/:id/sprints/"
+ *                      Add sprint to project / Specific User - "POST /projects/:projectId/sprints/"
  ******************************************************************************/
 
-router.post('/:id/sprints', auth, async (req: Request, res: Response) => {
+router.post('/:projectId/sprints', auth, async (req: Request, res: Response) => {
     try {
-        const projectId = req.params.id;
+        const projectId = req.params.projectId;
         const user = (req as any as IAuthorizedRequest).user;
         const project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
         if (project) {
@@ -65,10 +65,10 @@ router.post('/:id/sprints', auth, async (req: Request, res: Response) => {
 });
 
 /******************************************************************************
- *                      Get sprint details / Specific User - "POST /projects/:id/sprints/":sprintId
+ *                      Get sprint details / Specific User - "POST /projects/:projectId/sprints/:sprintId"
  ******************************************************************************/
 
-router.post('/:id/sprints', auth, async (req: Request, res: Response) => {
+router.post('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Response) => {
     try {
         res.send();
     } catch (e) {

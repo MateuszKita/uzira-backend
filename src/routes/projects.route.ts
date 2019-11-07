@@ -62,7 +62,7 @@ router.get('/', auth, async (req: Request, res: Response) => {
 });
 
 /******************************************************************************
- *                      Remove Specific Project - "DELETE /projects/:id"
+ *                      Remove Specific Project - "DELETE /projects/:projectId"
  ******************************************************************************/
 
 router.delete('/:projectId', auth, async (req: Request, res: Response) => {
@@ -83,7 +83,7 @@ router.delete('/:projectId', auth, async (req: Request, res: Response) => {
 });
 
 /******************************************************************************
- *                      Get users belonging to project / Specific User - "GET /projects/:id/users"
+ *                      Get users belonging to project / Specific User - "GET /projects/:projectId/users"
  ******************************************************************************/
 
 router.get('/:projectId/users', auth, async (req: Request, res: Response) => {
@@ -104,7 +104,7 @@ router.get('/:projectId/users', auth, async (req: Request, res: Response) => {
 });
 
 /******************************************************************************
- *                      Add user to project / Specific User - "POST /projects/:id/users/:userId"
+ *                      Add user to project / Specific User - "POST /projects/:projectId/users/:userId"
  ******************************************************************************/
 
 router.post('/:projectId/users/:userId', auth, async (req: Request, res: Response) => {
@@ -136,7 +136,7 @@ router.post('/:projectId/users/:userId', auth, async (req: Request, res: Respons
 });
 
 /******************************************************************************
- *                      Remove user from project / Specific User - "DELETE /projects/:id/users/:userId"
+ *                      Remove user from project / Specific User - "DELETE /projects/:projectId/users/:userId"
  ******************************************************************************/
 
 router.post('/:projectId/users/:userId', auth, async (req: Request, res: Response) => {
@@ -166,7 +166,7 @@ router.post('/:projectId/users/:userId', auth, async (req: Request, res: Respons
 });
 
 /******************************************************************************
- *                      Get project backlog / Specific User - "GET /projects/:id/backlog"
+ *                      Get project backlog / Specific User - "GET /projects/:projectId/backlog"
  ******************************************************************************/
 
 router.get('/:projectId/backlog', auth, async (req: Request, res: Response) => {
@@ -187,7 +187,7 @@ router.get('/:projectId/backlog', auth, async (req: Request, res: Response) => {
 });
 
 /******************************************************************************
- *                      Add task to project backlog / Specific User - "POST /projects/:id/backlog/"
+ *                      Add task to project backlog / Specific User - "POST /projects/:projectId/backlog/"
  ******************************************************************************/
 
 router.post('/:projectId/backlog', auth, async (req: Request, res: Response) => {
