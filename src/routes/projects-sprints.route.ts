@@ -68,6 +68,45 @@ router.post('/:projectId/sprints', auth, async (req: Request, res: Response) => 
  *                      Get sprint details / Specific User - "POST /projects/:projectId/sprints/:sprintId"
  ******************************************************************************/
 
+router.get('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Response) => {
+    try {
+        res.send();
+    } catch (e) {
+        console.error(e);
+        res.status(BAD_REQUEST).send(e);
+    }
+});
+
+/******************************************************************************
+ *                      Update sprint details / Specific User - "PATCH /projects/:projectId/sprints/:sprintId"
+ ******************************************************************************/
+
+router.patch('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Response) => {
+    try {
+        res.send();
+    } catch (e) {
+        console.error(e);
+        res.status(BAD_REQUEST).send(e);
+    }
+});
+
+/******************************************************************************
+ *                      Remove sprint / Specific User - "DELETE /projects/:projectId/sprints/:sprintId"
+ ******************************************************************************/
+
+router.delete('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Response) => {
+    try {
+        res.send();
+    } catch (e) {
+        console.error(e);
+        res.status(BAD_REQUEST).send(e);
+    }
+});
+
+/******************************************************************************
+ *                      Add task to sprint / Specific User - "DELETE /projects/:projectId/sprints/:sprintId"
+ ******************************************************************************/
+
 router.post('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Response) => {
     try {
         res.send();
