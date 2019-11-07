@@ -4,6 +4,8 @@ import {Project} from '../mongoose/projects.mongoose';
 import {IAuthorizedRequest, IUser} from '../models/users.model';
 import {auth} from '../middleware/authorization';
 import {ISprint} from '../models/sprints.model';
+import {ITask} from '../models/tasks.model';
+import {Task} from '../mongoose/tasks.mongoose';
 
 const router = Router();
 
@@ -139,8 +141,6 @@ router.patch('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Re
         });
         await project.save();
 
-        console.log(1111111111111111111111111, project.toObject());
-
         res.send({message: `Sprint ${sprint.index} updated!`});
 
     } catch (e) {
@@ -193,8 +193,43 @@ router.post('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Res
     try {
         const user = (req as any as IAuthorizedRequest).user;
         const {projectId, sprintId} = req.params;
+        const taskObject: ITask = req.body;
+        taskObject.projectId = projectId;
+        taskObject.status = 'open';
+        const task = new Task(taskObject);
+        await task.save();
+        const taskWithId: ITask = (await Task.findOne(taskObject) as any).toObject();
+        const project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
 
-        res.send();
+        if (project) {
+            let sprintIndex = -1;
+            const sprint = (project.toObject().sprints as ISprint[])
+                .find((projectSprint: ISprint, index) => {
+                    if (projectSprint._id.toHexString() === sprintId) {
+                        sprintIndex = index;
+                        return true;
+                    } else {
+                        return false;
+                    }
+                });
+
+            if (sprint) {
+                sprint.tasks = [...sprint.tasks, taskWithId];
+
+                const newSprints: ISprint[] = project.toObject().sprints;
+                newSprints.splice(sprintIndex, 1, sprint);
+
+                await project.update({
+                    ...project.toObject(),
+                    sprints: newSprints
+                });
+                res.send(`Updated project \'${project.toObject().name}\' Sprint ${sprint.index} by adding task: \'${taskObject.name}\'`);
+            } else {
+                res.status(NOT_FOUND).send('Could not find sprint with given ID');
+            }
+        } else {
+            res.status(NOT_FOUND).send('Could not find project with given ID');
+        }
     } catch (e) {
         console.error(e);
         res.status(BAD_REQUEST).send(e);
