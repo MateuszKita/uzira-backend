@@ -157,8 +157,28 @@ router.delete('/:projectId/sprints/:sprintId', auth, async (req: Request, res: R
     try {
         const user = (req as any as IAuthorizedRequest).user;
         const {projectId, sprintId} = req.params;
+        const project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
 
-        res.send();
+        if (!project) {
+            return res.status(NOT_FOUND).send('Could not find project with given ID');
+        }
+
+        const sprintIndex = (project.toObject().sprints as ISprint[])
+            .findIndex((projectSprint: ISprint) => projectSprint._id.toHexString() === sprintId);
+
+        const newSprintsList: ISprint[] = project.toObject().sprints;
+        newSprintsList.splice(sprintIndex, 1);
+
+        await project.update({
+            ...project.toObject(),
+            sprints: newSprintsList
+        });
+        await project.save();
+
+        return sprintIndex > -1
+            ? res.send(`Successfully deleted sprint`)
+            : res.status(NOT_FOUND).send('Could not find sprint with given ID');
+
     } catch (e) {
         console.error(e);
         res.status(BAD_REQUEST).send(e);
