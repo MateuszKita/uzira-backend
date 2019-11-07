@@ -2,7 +2,7 @@ import {ObjectId} from 'mongodb';
 import {Document} from 'mongoose';
 
 export interface IUser {
-    _id: ObjectId | any;
+    _id: string | any;
     name: string;
     email: string;
     password: string;
@@ -12,7 +12,7 @@ export interface IUser {
 export interface ISimpleUser {
     email: string;
     name: string;
-    _id: ObjectId;
+    _id: string;
 }
 
 export interface IUserDTO extends IUser, Document {
@@ -26,5 +26,5 @@ export interface IAuthorizedRequest extends Request {
 
 export interface IUserToken {
     token: string;
-    _id: ObjectId;
+    _id: string;
 }

@@ -5,7 +5,7 @@ import {ISprint} from './sprints.model';
 import {ISimpleUser} from './users.model';
 
 export interface IProject {
-    _id: ObjectId | any;
+    _id: string | any;
     backlog: {
         tasks: ITask[];
     };
@@ -15,7 +15,7 @@ export interface IProject {
 }
 
 export interface ISimpleProject {
-    _id: ObjectId | any;
+    _id: string | any;
     name: string;
 }
 

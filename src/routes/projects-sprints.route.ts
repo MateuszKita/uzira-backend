@@ -70,9 +70,20 @@ router.post('/:projectId/sprints', auth, async (req: Request, res: Response) => 
 
 router.get('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Response) => {
     try {
+        const user = (req as any as IAuthorizedRequest).user;
         const {projectId, sprintId} = req.params;
+        const project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
 
-        res.send();
+        if (!project) {
+            return res.status(NOT_FOUND).send('Could not find project with given ID');
+        }
+
+        const sprint = (project.toObject().sprints as ISprint[]).find((projectSprint: ISprint) => projectSprint._id === sprintId);
+
+        return sprint
+            ? res.send(sprint)
+            : res.status(NOT_FOUND).send('Could not find sprint with given ID');
+
     } catch (e) {
         console.error(e);
         res.status(BAD_REQUEST).send(e);
@@ -85,6 +96,7 @@ router.get('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Resp
 
 router.patch('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Response) => {
     try {
+        const user = (req as any as IAuthorizedRequest).user;
         const {projectId, sprintId} = req.params;
 
         res.send();
@@ -100,6 +112,7 @@ router.patch('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Re
 
 router.delete('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Response) => {
     try {
+        const user = (req as any as IAuthorizedRequest).user;
         const {projectId, sprintId} = req.params;
 
         res.send();
@@ -115,6 +128,7 @@ router.delete('/:projectId/sprints/:sprintId', auth, async (req: Request, res: R
 
 router.post('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Response) => {
     try {
+        const user = (req as any as IAuthorizedRequest).user;
         const {projectId, sprintId} = req.params;
 
         res.send();
