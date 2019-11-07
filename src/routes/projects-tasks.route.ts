@@ -57,6 +57,14 @@ router.get('/:projectId/tasks/:taskId', auth, async (req: Request, res: Response
 
 router.patch('/:projectId/tasks/:taskId', auth, async (req: Request, res: Response) => {
     try {
+        const updates = Object.keys(req.body).length > 0 ? Object.keys(req.body) : [];
+        const allowedUpdates = ['type', 'estimation', 'assigned', 'assigned', 'name', 'description', 'status'];
+        const isValidOperation = updates.every((update) => allowedUpdates.includes(update)) && updates.length > 0;
+
+        if (!isValidOperation) {
+            return res.status(BAD_REQUEST).send({error: 'Invalid updates!'});
+        }
+
         const {projectId, taskId} = req.params;
         const user = (req as any as IAuthorizedRequest).user;
         const project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
