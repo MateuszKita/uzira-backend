@@ -65,9 +65,9 @@ router.get('/', auth, async (req: Request, res: Response) => {
  *                      Remove Specific Project - "DELETE /projects/:id"
  ******************************************************************************/
 
-router.delete('/:id', auth, async (req: Request, res: Response) => {
+router.delete('/:projectId', auth, async (req: Request, res: Response) => {
     try {
-        const projectId = req.params.id;
+        const projectId = req.params.projectId;
         let project;
         if (projectId) {
             const user = (req as any as IAuthorizedRequest).user;
@@ -86,9 +86,9 @@ router.delete('/:id', auth, async (req: Request, res: Response) => {
  *                      Get users belonging to project / Specific User - "GET /projects/:id/users"
  ******************************************************************************/
 
-router.get('/:id/users', auth, async (req: Request, res: Response) => {
+router.get('/:projectId/users', auth, async (req: Request, res: Response) => {
     try {
-        const projectId = req.params.id;
+        const projectId = req.params.projectId;
         const user = (req as any as IAuthorizedRequest).user;
         const project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
         if (project) {
@@ -107,9 +107,9 @@ router.get('/:id/users', auth, async (req: Request, res: Response) => {
  *                      Add user to project / Specific User - "POST /projects/:id/users/:userId"
  ******************************************************************************/
 
-router.post('/:id/users/:userId', auth, async (req: Request, res: Response) => {
+router.post('/:projectId/users/:userId', auth, async (req: Request, res: Response) => {
     try {
-        const projectId = req.params.id;
+        const projectId = req.params.projectId;
         const userId = req.params.userId;
         const user = (req as any as IAuthorizedRequest).user;
         const project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
@@ -139,9 +139,9 @@ router.post('/:id/users/:userId', auth, async (req: Request, res: Response) => {
  *                      Remove user from project / Specific User - "DELETE /projects/:id/users/:userId"
  ******************************************************************************/
 
-router.post('/:id/users/:userId', auth, async (req: Request, res: Response) => {
+router.post('/:projectId/users/:userId', auth, async (req: Request, res: Response) => {
     try {
-        const projectId = req.params.id;
+        const projectId = req.params.projectId;
         const userId = req.params.userId;
         const user = (req as any as IAuthorizedRequest).user;
         const project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
@@ -169,9 +169,9 @@ router.post('/:id/users/:userId', auth, async (req: Request, res: Response) => {
  *                      Get project backlog / Specific User - "GET /projects/:id/backlog"
  ******************************************************************************/
 
-router.get('/:id/backlog', auth, async (req: Request, res: Response) => {
+router.get('/:projectId/backlog', auth, async (req: Request, res: Response) => {
     try {
-        const projectId = req.params.id;
+        const projectId = req.params.projectId;
         const user = (req as any as IAuthorizedRequest).user;
         const project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
         if (project) {
@@ -190,9 +190,9 @@ router.get('/:id/backlog', auth, async (req: Request, res: Response) => {
  *                      Add task to project backlog / Specific User - "POST /projects/:id/backlog/"
  ******************************************************************************/
 
-router.post('/:id/backlog', auth, async (req: Request, res: Response) => {
+router.post('/:projectId/backlog', auth, async (req: Request, res: Response) => {
     try {
-        const projectId = req.params.id;
+        const projectId = req.params.projectId;
         const user = (req as any as IAuthorizedRequest).user;
         const project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
         if (project) {

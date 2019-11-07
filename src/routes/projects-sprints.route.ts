@@ -64,4 +64,17 @@ router.post('/:id/sprints', auth, async (req: Request, res: Response) => {
     }
 });
 
+/******************************************************************************
+ *                      Get sprint details / Specific User - "POST /projects/:id/sprints/":sprintId
+ ******************************************************************************/
+
+router.post('/:id/sprints', auth, async (req: Request, res: Response) => {
+    try {
+        res.send();
+    } catch (e) {
+        console.error(e);
+        res.status(BAD_REQUEST).send(e);
+    }
+});
+
 export default router;
