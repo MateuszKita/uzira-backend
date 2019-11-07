@@ -1,6 +1,10 @@
 import {Request, Response, Router} from 'express';
-import {BAD_REQUEST} from 'http-status-codes';
+import {BAD_REQUEST, NOT_FOUND} from 'http-status-codes';
 import {auth} from '../middleware/authorization';
+import {IAuthorizedRequest} from '../models/users.model';
+import {Project} from '../mongoose/projects.mongoose';
+import {ITask} from '../models/tasks.model';
+import {ISprint} from '../models/sprints.model';
 
 const router = Router();
 
@@ -11,8 +15,36 @@ const router = Router();
 router.get('/:projectId/tasks/:taskId', auth, async (req: Request, res: Response) => {
     try {
         const {projectId, taskId} = req.params;
+        const user = (req as any as IAuthorizedRequest).user;
+        const project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
+        if (!project) {
+            return res.status(NOT_FOUND).send('Could not find project with given ID');
+        }
 
-        res.send();
+        const taskIndexInBacklog = project.toObject().backlog.tasks
+            .findIndex((task: ITask) => task._id.toHexString() === taskId);
+
+        if (taskIndexInBacklog > -1) {
+            res.send(project.toObject().backlog.tasks[taskIndexInBacklog]);
+        } else {
+            let taskIdInSprint = -1;
+            const sprintIndexWithTask = project.toObject().sprints
+                .findIndex((sprint: any) => sprint.tasks
+                    .some((task: ITask, index: number) => {
+                        if (task._id.toHexString() === taskId) {
+                            taskIdInSprint = index;
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    })
+                );
+            if (sprintIndexWithTask > -1) {
+                res.send((project.toObject().sprints)[sprintIndexWithTask].tasks[taskIdInSprint]);
+            } else {
+                return res.status(NOT_FOUND).send('Could not find task with given ID');
+            }
+        }
     } catch (e) {
         console.error(e);
         res.status(BAD_REQUEST).send(e);
