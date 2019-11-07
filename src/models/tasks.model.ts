@@ -1,5 +1,5 @@
-import {ISimpleUser} from './users.model';
 import {ObjectId} from 'mongodb';
+import {ISimpleUser} from './users.model';
 
 export interface ITask {
     _id: ObjectId;
@@ -7,9 +7,10 @@ export interface ITask {
     type: string;
     estimation: number;
     assigned: ISimpleUser;
-    projectId: string;
+    projectId: ObjectId | null;
     description: string;
     status: string;
-    subtasks?: ITask;
-    parent?: ITask;
+    sprint: ObjectId | null;
+    subtasks: ITask[];
+    parent: ObjectId | null;
 }
