@@ -109,8 +109,7 @@ router.get('/:projectId/users', auth, async (req: Request, res: Response) => {
 
 router.post('/:projectId/users/:userId', auth, async (req: Request, res: Response) => {
     try {
-        const projectId = req.params.projectId;
-        const userId = req.params.userId;
+        const {projectId, userId} = req.params;
         const user = (req as any as IAuthorizedRequest).user;
         const project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
         const newUser = await User.findOne({_id: userId});
@@ -141,8 +140,7 @@ router.post('/:projectId/users/:userId', auth, async (req: Request, res: Respons
 
 router.post('/:projectId/users/:userId', auth, async (req: Request, res: Response) => {
     try {
-        const projectId = req.params.projectId;
-        const userId = req.params.userId;
+        const {projectId, userId} = req.params;
         const user = (req as any as IAuthorizedRequest).user;
         const project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
         if (project) {

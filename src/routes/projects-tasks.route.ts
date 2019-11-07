@@ -10,6 +10,8 @@ const router = Router();
 
 router.get('/:projectId/tasks/:taskId', auth, async (req: Request, res: Response) => {
     try {
+        const {projectId, taskId} = req.params;
+
         res.send();
     } catch (e) {
         console.error(e);
@@ -23,6 +25,8 @@ router.get('/:projectId/tasks/:taskId', auth, async (req: Request, res: Response
 
 router.patch('/:projectId/tasks/:taskId', auth, async (req: Request, res: Response) => {
     try {
+        const {projectId, taskId} = req.params;
+
         res.send();
     } catch (e) {
         console.error(e);
@@ -36,6 +40,8 @@ router.patch('/:projectId/tasks/:taskId', auth, async (req: Request, res: Respon
 
 router.delete('/:projectId/tasks/:taskId', auth, async (req: Request, res: Response) => {
     try {
+        const {projectId, taskId} = req.params;
+
         res.send();
     } catch (e) {
         console.error(e);
@@ -49,6 +55,8 @@ router.delete('/:projectId/tasks/:taskId', auth, async (req: Request, res: Respo
 
 router.post('/:projectId/tasks/:taskId/toSprint/:sprintId', auth, async (req: Request, res: Response) => {
     try {
+        const {projectId, taskId, sprintId} = req.params;
+
         res.send();
     } catch (e) {
         console.error(e);
@@ -62,6 +70,8 @@ router.post('/:projectId/tasks/:taskId/toSprint/:sprintId', auth, async (req: Re
 
 router.post('/:projectId/tasks/:taskId/toBacklog', auth, async (req: Request, res: Response) => {
     try {
+        const {projectId, taskId, sprintId} = req.params;
+
         res.send();
     } catch (e) {
         console.error(e);

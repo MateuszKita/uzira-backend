@@ -70,6 +70,8 @@ router.post('/:projectId/sprints', auth, async (req: Request, res: Response) => 
 
 router.get('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Response) => {
     try {
+        const {projectId, sprintId} = req.params;
+
         res.send();
     } catch (e) {
         console.error(e);
@@ -83,6 +85,8 @@ router.get('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Resp
 
 router.patch('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Response) => {
     try {
+        const {projectId, sprintId} = req.params;
+
         res.send();
     } catch (e) {
         console.error(e);
@@ -96,6 +100,8 @@ router.patch('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Re
 
 router.delete('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Response) => {
     try {
+        const {projectId, sprintId} = req.params;
+
         res.send();
     } catch (e) {
         console.error(e);
@@ -109,6 +115,8 @@ router.delete('/:projectId/sprints/:sprintId', auth, async (req: Request, res: R
 
 router.post('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Response) => {
     try {
+        const {projectId, sprintId} = req.params;
+
         res.send();
     } catch (e) {
         console.error(e);
