@@ -83,6 +83,7 @@ router.get('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Resp
                 console.log(1, projectSprint._id.valueOf());
                 console.log(2, projectSprint._id);
                 console.log(3, sprintId);
+                console.log(4, projectSprint._id.toHexString());
                 return projectSprint._id.valueOf() === sprintId;
             });
 
