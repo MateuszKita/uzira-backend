@@ -41,7 +41,7 @@ const intervalMilliseconds = 1000 * 60 * 20;
 
 setInterval(() => {
     const hour = new Date().getHours();
-    const appUrl = 'https://uzira-backend-nodejs.herokuapp.com/';
+    const appUrl = 'https://uzira-backend-nodejs.herokuapp.com/users/';
     if (hour > 6 && hour < 23) {
         http.get(appUrl);
     }
