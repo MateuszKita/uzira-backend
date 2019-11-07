@@ -12,7 +12,6 @@ const allowedOrigins = ['https://uzira.netlify.com', 'http://localhost:4200'];
 
 app.use(cors({
     origin: (origin, callback) => {
-        console.log(111111111111111111, origin, allowedOrigins.findIndex((allowedOrigin) => origin === allowedOrigin));
         if (!origin) {
             return callback(null, true);
         }
