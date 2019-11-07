@@ -97,7 +97,7 @@ router.get('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Resp
 
 router.patch('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Response) => {
     const updates = Object.keys(req.body).length > 0 ? Object.keys(req.body) : [];
-    const allowedUpdates = ['name', 'email', 'password', 'age'];
+    const allowedUpdates = ['active', 'startDate', 'endDate'];
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update)) && updates.length > 0;
 
     try {
