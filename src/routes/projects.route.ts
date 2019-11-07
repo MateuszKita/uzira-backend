@@ -197,6 +197,7 @@ router.post('/:projectId/backlog', auth, async (req: Request, res: Response) => 
             const projectBacklog: IProjectBacklog = project.toObject().backlog;
             const taskObject: ITask = req.body;
             taskObject.projectId = projectId;
+            taskObject.status = 'open';
             const task = new Task(taskObject);
             await task.save();
             const taskWithId: ITask = (await Task.findOne(taskObject) as any).toObject();

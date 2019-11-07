@@ -9,6 +9,7 @@ export interface ITask {
     assigned: ISimpleUser;
     projectId: string;
     description: string;
+    status: string;
     subtasks?: ITask;
     parent?: ITask;
 }
