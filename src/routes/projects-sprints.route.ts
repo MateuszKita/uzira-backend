@@ -79,13 +79,7 @@ router.get('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Resp
         }
 
         const sprint = (project.toObject().sprints as ISprint[])
-            .find((projectSprint: ISprint) => {
-                console.log(1, projectSprint._id.valueOf());
-                console.log(2, projectSprint._id);
-                console.log(3, sprintId);
-                console.log(4, projectSprint._id.toHexString());
-                return projectSprint._id.valueOf() === sprintId;
-            });
+            .find((projectSprint: ISprint) => projectSprint._id.toHexString() === sprintId);
 
         return sprint
             ? res.send(sprint)
