@@ -217,8 +217,7 @@ router.post('/:projectId/tasks/:taskId/toSprint/:sprintId', auth, async (req: Re
         } else {
             let currentSprintWithTaskIndex: number = -1;
             currentSprintWithTask = project.toObject().sprints
-                .findIndex((s: any, index: number) => s.tasks
-                    .some((t: ITask) => {
+                .findIndex((s: any, index: number) => s.tasks.some((t: ITask) => {
                         if (t._id.toHexString() === taskId) {
                             currentSprintWithTaskIndex = index;
                             return true;
@@ -227,7 +226,12 @@ router.post('/:projectId/tasks/:taskId/toSprint/:sprintId', auth, async (req: Re
                         }
                     })
                 );
-            if (currentSprintWithTask) {
+            if (currentSprintWithTaskIndex > -1 && currentSprintWithTask) {
+                console.log('--------------');
+                console.log(currentSprintWithTask._id);
+                console.log(project.toObject().sprints.map((s: any) => s._id));
+                console.log('--------------');
+
                 const newSprints: ISprint[] = project.toObject().sprints;
                 newSprints[currentSprintWithTaskIndex].tasks.splice(currentSprintWithTaskIndex, 1);
                 await project.update({
