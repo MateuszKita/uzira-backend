@@ -297,17 +297,26 @@ router.post('/:projectId/tasks/:taskId/toBacklog', auth, async (req: Request, re
         }
 
         let taskToMove: ITask | null = null;
+        let taskIndex: number = -1;
         const currentSprintWithTaskIndex: number = project.toObject().sprints
-            .findIndex((s: any) => s.tasks.some((t: ITask) => t._id.toHexString() === taskId));
+            .findIndex((s: any, index: number) => s.tasks.some((t: ITask) => {
+                if (t._id.toHexString() === taskId) {
+                    taskIndex = index;
+                    return true;
+                } else {
+                    return false;
+                }
+            }));
 
-        if (currentSprintWithTaskIndex > -1) {
+        if (currentSprintWithTaskIndex > -1 && taskIndex > -1) {
             const newSprints: ISprint[] = project.toObject().sprints;
-            taskToMove = newSprints[currentSprintWithTaskIndex].tasks.splice(currentSprintWithTaskIndex, 1) as any as ITask;
+            taskToMove = newSprints[currentSprintWithTaskIndex].tasks[taskIndex];
+            newSprints[currentSprintWithTaskIndex].tasks.splice(taskIndex, 1);
             await project.update({
                 ...project.toObject(),
                 sprints: newSprints
             });
-
+            await project.save();
             if (!taskToMove) {
                 return res.status(NOT_FOUND).send('Could not find task with given ID');
             }
@@ -321,7 +330,7 @@ router.post('/:projectId/tasks/:taskId/toBacklog', auth, async (req: Request, re
             return res.status(NOT_FOUND).send('Could not find project with given ID');
         }
 
-        taskToMove.sprint = null;
+        taskToMove.sprint = project.toObject().sprints[currentSprintWithTaskIndex]._id;
         const newBacklogTasks: ITask[] = [...project.toObject().backlog.tasks, taskToMove];
         await project.update({
             ...project.toObject(),
