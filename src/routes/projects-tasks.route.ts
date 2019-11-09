@@ -1,5 +1,5 @@
 import {Request, Response, Router} from 'express';
-import {BAD_REQUEST, NOT_FOUND} from 'http-status-codes';
+import {BAD_REQUEST, CONFLICT, NOT_FOUND} from 'http-status-codes';
 import {auth} from '../middleware/authorization';
 import {IAuthorizedRequest} from '../models/users.model';
 import {Project} from '../mongoose/projects.mongoose';
@@ -201,6 +201,8 @@ router.post('/:projectId/tasks/:taskId/toSprint/:sprintId', auth, async (req: Re
         const taskIndexInBacklog = project.toObject().backlog.tasks.findIndex((task: ITask) => task._id.toHexString() === taskId);
         let taskToMove: ITask | null = null;
 
+        let currentSprintWithTask: ISprint | null = null;
+
         if (taskIndexInBacklog > -1) {
             const newBacklogTasks: ITask[] = project.toObject().backlog.tasks;
             taskToMove = newBacklogTasks[taskIndexInBacklog];
@@ -212,6 +214,29 @@ router.post('/:projectId/tasks/:taskId/toSprint/:sprintId', auth, async (req: Re
                 }
             });
             await project.save();
+        } else {
+            let currentSprintWithTaskIndex: number = -1;
+            currentSprintWithTask = project.toObject().sprints
+                .findIndex((s: any, index: number) => s.tasks
+                    .some((t: ITask) => {
+                        if (t._id.toHexString() === taskId) {
+                            currentSprintWithTaskIndex = index;
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    })
+                );
+            if (currentSprintWithTask) {
+                const newSprints: ISprint[] = project.toObject().sprints;
+                newSprints[currentSprintWithTaskIndex].tasks.splice(currentSprintWithTaskIndex, 1);
+                await project.update({
+                    ...project.toObject(),
+                    sprints: newSprints
+                });
+            } else {
+                return res.status(NOT_FOUND).send('Could not find task with given ID');
+            }
         }
 
         let sprintIndex: number = -1;
@@ -223,6 +248,10 @@ router.post('/:projectId/tasks/:taskId/toSprint/:sprintId', auth, async (req: Re
                 return false;
             }
         });
+
+        if (currentSprintWithTask && sprint._id.toHexString() === currentSprintWithTask._id.toHexString()) {
+            return res.status(CONFLICT).send({message: 'This task is already in this sprint'});
+        }
 
         if (sprintIndex > -1) {
             if (!taskToMove) {
