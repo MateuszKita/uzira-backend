@@ -5,7 +5,6 @@ import {IAuthorizedRequest} from '../models/users.model';
 import {Project} from '../mongoose/projects.mongoose';
 import {ITask} from '../models/tasks.model';
 import {ISprint} from '../models/sprints.model';
-import {IProjectBacklog} from '../models/projects.model';
 
 const router = Router();
 
