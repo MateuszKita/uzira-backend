@@ -192,7 +192,54 @@ router.post('/:projectId/tasks/:taskId/toSprint/:sprintId', auth, async (req: Re
     try {
         const {projectId, taskId, sprintId} = req.params;
 
-        res.send();
+        const user = (req as any as IAuthorizedRequest).user;
+        const project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
+        if (!project) {
+            return res.status(NOT_FOUND).send('Could not find project with given ID');
+        }
+
+        const taskIndexInBacklog = project.toObject().backlog.tasks.findIndex((task: ITask) => task._id.toHexString() === taskId);
+        let taskToMove: ITask | null = null;
+
+        if (taskIndexInBacklog > -1) {
+            const newBacklogTasks: ITask[] = project.toObject().backlog.tasks;
+            taskToMove = newBacklogTasks[taskIndexInBacklog];
+            newBacklogTasks.splice(taskIndexInBacklog, 1);
+            await project.update({
+                ...project.toObject(),
+                backlog: {
+                    tasks: newBacklogTasks
+                }
+            });
+            await project.save();
+        }
+
+        let sprintIndex: number = -1;
+        const sprint: ISprint = project.toObject().sprints.find((s: any, index: number) => {
+            if (s._id.toHexString() === sprintId) {
+                sprintIndex = index;
+                return true;
+            } else {
+                return false;
+            }
+        });
+
+        if (sprintIndex > -1) {
+            if (!taskToMove) {
+                return res.status(NOT_FOUND).send('Could not find task with given ID');
+            }
+
+            const newSprints: ISprint[] = project.toObject().sprints;
+            newSprints[sprintIndex].tasks = [...newSprints[sprintIndex].tasks, taskToMove];
+            await project.update({
+                ...project.toObject(),
+                sprints: newSprints
+            });
+            await project.save();
+            res.send(`Successfully move task '${taskToMove.name}' from backlog to 'Sprint ${sprint.index}'`);
+        } else {
+            res.status(NOT_FOUND).send('Could not find sprint with given ID');
+        }
     } catch (e) {
         console.error(e);
         res.status(BAD_REQUEST).send(e);
