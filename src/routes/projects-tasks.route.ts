@@ -68,6 +68,7 @@ router.patch('/:projectId/tasks/:taskId', auth, async (req: Request, res: Respon
         const {projectId, taskId} = req.params;
         const user = (req as any as IAuthorizedRequest).user;
         const project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
+
         if (!project) {
             return res.status(NOT_FOUND).send('Could not find project with given ID');
         }
@@ -77,7 +78,10 @@ router.patch('/:projectId/tasks/:taskId', auth, async (req: Request, res: Respon
 
         if (taskIndexInBacklog > -1) {
             const newBacklogTasks: ITask[] = project.toObject().backlog.tasks;
-            newBacklogTasks.splice(taskIndexInBacklog, 1);
+            const updatedTask: ITask = newBacklogTasks[taskIndexInBacklog];
+            updates.forEach((update) => updatedTask[update] = req.body[update]);
+
+            newBacklogTasks.splice(taskIndexInBacklog, 1, updatedTask);
             await project.update({
                 ...project.toObject(),
                 backlog: {
@@ -100,6 +104,16 @@ router.patch('/:projectId/tasks/:taskId', auth, async (req: Request, res: Respon
                     })
                 );
             if (sprintIndexWithTask > -1) {
+                const newSprints: ISprint[] = project.toObject().sprints;
+                const updatedTask: ITask = newSprints[sprintIndexWithTask].tasks[taskIndexInBacklog];
+                updates.forEach((update) => updatedTask[update] = req.body[update]);
+
+                newSprints[sprintIndexWithTask].tasks.splice(sprintIndexWithTask, 1, updatedTask);
+                await project.update({
+                    ...project.toObject(),
+                    sprints: newSprints
+                });
+                await project.save();
                 res.send((project.toObject().sprints)[sprintIndexWithTask].tasks[taskIdInSprint]);
             } else {
                 return res.status(NOT_FOUND).send('Could not find task with given ID');

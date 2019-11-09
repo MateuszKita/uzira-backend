@@ -13,4 +13,6 @@ export interface ITask {
     sprint: ObjectId | null;
     subtasks: ITask[];
     parent: ObjectId | null;
+
+    [key: string]: ObjectId | string | number | ISimpleUser | null | ITask[];
 }
