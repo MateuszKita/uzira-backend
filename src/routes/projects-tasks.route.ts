@@ -153,12 +153,12 @@ router.delete('/:projectId/tasks/:taskId', auth, async (req: Request, res: Respo
             await project.save();
             res.send('Successfully removed task from sprint backlog');
         } else {
-            let taskIdInSprint = -1;
+            let taskIndexInSprint = -1;
             const sprintIndexWithTask = project.toObject().sprints
                 .findIndex((sprint: any) => sprint.tasks
                     .some((task: ITask, index: number) => {
                         if (task._id.toHexString() === taskId) {
-                            taskIdInSprint = index;
+                            taskIndexInSprint = index;
                             return true;
                         } else {
                             return false;
@@ -193,7 +193,7 @@ router.post('/:projectId/tasks/:taskId/toSprint/:sprintId', auth, async (req: Re
         const {projectId, taskId, sprintId} = req.params;
 
         const user = (req as any as IAuthorizedRequest).user;
-        const project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
+        let project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
         if (!project) {
             return res.status(NOT_FOUND).send('Could not find project with given ID');
         }
@@ -227,11 +227,6 @@ router.post('/:projectId/tasks/:taskId/toSprint/:sprintId', auth, async (req: Re
                     })
                 );
             if (currentSprintWithTaskIndex > -1 && currentSprintWithTask) {
-                console.log('--------------');
-                console.log(currentSprintWithTask._id);
-                console.log(project.toObject().sprints.map((s: any) => s._id));
-                console.log('--------------');
-
                 const newSprints: ISprint[] = project.toObject().sprints;
                 newSprints[currentSprintWithTaskIndex].tasks.splice(currentSprintWithTaskIndex, 1);
                 await project.update({
@@ -241,6 +236,12 @@ router.post('/:projectId/tasks/:taskId/toSprint/:sprintId', auth, async (req: Re
             } else {
                 return res.status(NOT_FOUND).send('Could not find task with given ID');
             }
+        }
+
+        project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
+
+        if (!project) {
+            return res.status(NOT_FOUND).send('Could not find project with given ID');
         }
 
         let sprintIndex: number = -1;
