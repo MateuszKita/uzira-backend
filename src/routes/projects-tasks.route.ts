@@ -270,7 +270,7 @@ router.post('/:projectId/tasks/:taskId/toSprint/:sprintId', auth, async (req: Re
                 sprints: newSprints
             });
             await project.save();
-            res.send(`Successfully move task '${taskToMove.name}' from backlog to 'Sprint ${sprint.index}'`);
+            res.send(`Successfully move task '${taskToMove.name}' from ${taskIndexInBacklog > 1 ? 'backlog' : 'another sprint'} to 'Sprint ${sprint.index}'`);
         } else {
             res.status(NOT_FOUND).send('Could not find sprint with given ID');
         }
