@@ -5,6 +5,7 @@ import {IAuthorizedRequest} from '../models/users.model';
 import {Project} from '../mongoose/projects.mongoose';
 import {ITask} from '../models/tasks.model';
 import {ISprint} from '../models/sprints.model';
+import {IProjectBacklog} from '../models/projects.model';
 
 const router = Router();
 
@@ -185,7 +186,7 @@ router.delete('/:projectId/tasks/:taskId', auth, async (req: Request, res: Respo
 });
 
 /******************************************************************************
- * Move task from backlog to sprint / Specific User - "POST /projects/:projectId/tasks/:taskId/toSprint/:sprintId'"
+ * Move task from backlog/sprint to sprint / Specific User - "POST /projects/:projectId/tasks/:taskId/toSprint/:sprintId'"
  ******************************************************************************/
 
 router.post('/:projectId/tasks/:taskId/toSprint/:sprintId', auth, async (req: Request, res: Response) => {
@@ -264,13 +265,14 @@ router.post('/:projectId/tasks/:taskId/toSprint/:sprintId', auth, async (req: Re
             }
 
             const newSprints: ISprint[] = project.toObject().sprints;
+            taskToMove.sprint = sprintId;
             newSprints[sprintIndex].tasks = [...newSprints[sprintIndex].tasks, taskToMove];
             await project.update({
                 ...project.toObject(),
                 sprints: newSprints
             });
             await project.save();
-            res.send(`Successfully move task '${taskToMove.name}' from ${taskIndexInBacklog > 1 ? 'backlog' : 'another sprint'} to 'Sprint ${sprint.index}'`);
+            res.send(`Successfully moved task '${taskToMove.name}' from ${taskIndexInBacklog > 1 ? 'backlog' : 'another sprint'} to 'Sprint ${sprint.index}'`);
         } else {
             res.status(NOT_FOUND).send('Could not find sprint with given ID');
         }
@@ -286,9 +288,50 @@ router.post('/:projectId/tasks/:taskId/toSprint/:sprintId', auth, async (req: Re
 
 router.post('/:projectId/tasks/:taskId/toBacklog', auth, async (req: Request, res: Response) => {
     try {
-        const {projectId, taskId, sprintId} = req.params;
+        const {projectId, taskId} = req.params;
 
-        res.send();
+        const user = (req as any as IAuthorizedRequest).user;
+        let project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
+
+        if (!project) {
+            return res.status(NOT_FOUND).send('Could not find project with given ID');
+        }
+
+        let taskToMove: ITask | null = null;
+        const currentSprintWithTaskIndex: number = project.toObject().sprints
+            .findIndex((s: any) => s.tasks.some((t: ITask) => t._id.toHexString() === taskId));
+
+        if (currentSprintWithTaskIndex > -1) {
+            const newSprints: ISprint[] = project.toObject().sprints;
+            taskToMove = newSprints[currentSprintWithTaskIndex].tasks.splice(currentSprintWithTaskIndex, 1) as any as ITask;
+            await project.update({
+                ...project.toObject(),
+                sprints: newSprints
+            });
+
+            if (!taskToMove) {
+                return res.status(NOT_FOUND).send('Could not find task with given ID');
+            }
+        } else {
+            return res.status(NOT_FOUND).send('Could not find task with given ID');
+        }
+
+        project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
+
+        if (!project) {
+            return res.status(NOT_FOUND).send('Could not find project with given ID');
+        }
+
+        taskToMove.sprint = null;
+        const newBacklogTasks: ITask[] = [...project.toObject().backlog.tasks, taskToMove];
+        await project.update({
+            ...project.toObject(),
+            backlog: {
+                tasks: newBacklogTasks
+            }
+        });
+        await project.save();
+        res.send(`Successfully moved task '${taskToMove.name}' from Sprint ${project.toObject().sprints[currentSprintWithTaskIndex].index} to Backlog`);
     } catch (e) {
         console.error(e);
         res.status(BAD_REQUEST).send(e);
