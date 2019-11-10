@@ -330,7 +330,7 @@ router.post('/:projectId/tasks/:taskId/toBacklog', auth, async (req: Request, re
             return res.status(NOT_FOUND).send('Could not find project with given ID');
         }
 
-        taskToMove.sprint = project.toObject().sprints[currentSprintWithTaskIndex]._id;
+        taskToMove.sprint = null;
         const newBacklogTasks: ITask[] = [...project.toObject().backlog.tasks, taskToMove];
         await project.update({
             ...project.toObject(),

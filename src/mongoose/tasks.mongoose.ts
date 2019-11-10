@@ -63,6 +63,7 @@ export const TaskSchema: Schema = new Schema({
     },
     sprint: {
         type: String,
+        required: false,
         default: null
     },
     description: {
