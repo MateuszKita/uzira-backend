@@ -31,11 +31,12 @@ export const UserSchema: Schema = new Schema({
         minlength: 7,
         trim: true,
         validate(value: string) {
-            const passwordIncludesIncorrectWords = value.toLowerCase().includes('password');
-            if (passwordIncludesIncorrectWords) {
-                throw new Error('Password cannot contain "password"');
-            }
-            return !passwordIncludesIncorrectWords;
+            // const passwordIncludesIncorrectWords = value.toLowerCase().includes('password');
+            //             // if (passwordIncludesIncorrectWords) {
+            //             //     throw new Error('Password cannot contain "password"');
+            //             // }
+            //             // return !passwordIncludesIncorrectWords;
+            return true;
         }
     },
     tokens: [{
