@@ -1,5 +1,5 @@
 import {Request, Response, Router} from 'express';
-import {BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND} from 'http-status-codes';
+import {BAD_REQUEST, CONFLICT, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND} from 'http-status-codes';
 import {User} from '../mongoose/users.mongoose';
 import {IAuthorizedRequest, IUserDTO} from '../models/users.model';
 import {auth} from '../middleware/authorization';
@@ -19,7 +19,7 @@ router.post('/', async (req: Request, res: Response) => {
         res.status(CREATED).send({user, token});
     } catch (e) {
         console.error(e);
-        res.status(BAD_REQUEST).send(e);
+        res.status(e.code === 11000 ? CONFLICT : BAD_REQUEST).send(e);
     }
 });
 
