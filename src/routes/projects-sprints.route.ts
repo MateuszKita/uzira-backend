@@ -176,8 +176,8 @@ router.delete('/:projectId/sprints/:sprintId', auth, async (req: Request, res: R
         await project.save();
 
         return sprintIndex > -1
-            ? res.send(`Successfully deleted sprint`)
-            : res.status(NOT_FOUND).send('Could not find sprint with given ID');
+            ? res.send({message: `Successfully deleted sprint`})
+            : res.status(NOT_FOUND).send({message: 'Could not find sprint with given ID'});
 
     } catch (e) {
         console.error(e);
@@ -225,7 +225,7 @@ router.post('/:projectId/sprints/:sprintId', auth, async (req: Request, res: Res
                     ...project.toObject(),
                     sprints: newSprints
                 });
-                res.send(`Updated project \'${project.toObject().name}\' Sprint ${sprint.index} by adding task: \'${taskObject.name}\'`);
+                res.send({message: `Updated project \'${project.toObject().name}\' Sprint ${sprint.index} by adding task: \'${taskObject.name}\'`});
             } else {
                 res.status(NOT_FOUND).send('Could not find sprint with given ID');
             }

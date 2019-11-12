@@ -151,7 +151,7 @@ router.delete('/:projectId/tasks/:taskId', auth, async (req: Request, res: Respo
                 }
             });
             await project.save();
-            res.send('Successfully removed task from sprint backlog');
+            res.send({message: 'Successfully removed task from sprint backlog'});
         } else {
             let taskIndexInSprint = -1;
             const sprintIndexWithTask = project.toObject().sprints
@@ -173,7 +173,7 @@ router.delete('/:projectId/tasks/:taskId', auth, async (req: Request, res: Respo
                     sprints: newSprints
                 });
                 await project.save();
-                res.send(`Successfully removed task from Sprint ${newSprints[sprintIndexWithTask].index}`);
+                res.send({message: `Successfully removed task from Sprint ${newSprints[sprintIndexWithTask].index}`});
             } else {
                 return res.status(NOT_FOUND).send('Could not find task with given ID');
             }
@@ -271,7 +271,7 @@ router.post('/:projectId/tasks/:taskId/toSprint/:sprintId', auth, async (req: Re
                 sprints: newSprints
             });
             await project.save();
-            res.send(`Successfully moved task '${taskToMove.name}' from ${taskIndexInBacklog > 1 ? 'backlog' : 'another sprint'} to 'Sprint ${sprint.index}'`);
+            res.send({message: `Successfully moved task '${taskToMove.name}' from ${taskIndexInBacklog > 1 ? 'backlog' : 'another sprint'} to 'Sprint ${sprint.index}'`});
         } else {
             res.status(NOT_FOUND).send('Could not find sprint with given ID');
         }
@@ -339,7 +339,7 @@ router.post('/:projectId/tasks/:taskId/toBacklog', auth, async (req: Request, re
             }
         });
         await project.save();
-        res.send(`Successfully moved task '${taskToMove.name}' from Sprint ${project.toObject().sprints[currentSprintWithTaskIndex].index} to Backlog`);
+        res.send({message: `Successfully moved task '${taskToMove.name}' from Sprint ${project.toObject().sprints[currentSprintWithTaskIndex].index} to Backlog`});
     } catch (e) {
         console.error(e);
         res.status(BAD_REQUEST).send(e);
