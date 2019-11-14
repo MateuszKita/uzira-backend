@@ -76,11 +76,7 @@ router.patch('/:projectId/tasks/:taskId', auth, async (req: Request, res: Respon
         const taskIndexInBacklog = project.toObject().backlog.tasks
             .findIndex((task: ITask) => task._id.toHexString() === taskId);
 
-        console.log('!!!!!!!!!', taskIndexInBacklog);
-
         if (taskIndexInBacklog > -1) {
-            console.log('aaaaaaaaa');
-
             const newBacklogTasks: ITask[] = project.toObject().backlog.tasks;
             const updatedTask: ITask = newBacklogTasks[taskIndexInBacklog];
             updates.forEach((update) => updatedTask[update] = req.body[update]);
@@ -95,8 +91,6 @@ router.patch('/:projectId/tasks/:taskId', auth, async (req: Request, res: Respon
             await project.save();
             res.send('Successfully removed task from sprint backlog');
         } else {
-            console.log('bbbbbbbbbb');
-
             let taskIdInSprint = -1;
             const sprintIndexWithTask = project.toObject().sprints
                 .findIndex((sprint: any) => sprint.tasks
@@ -111,7 +105,14 @@ router.patch('/:projectId/tasks/:taskId', auth, async (req: Request, res: Respon
                 );
             if (sprintIndexWithTask > -1) {
                 const newSprints: ISprint[] = project.toObject().sprints;
-                const updatedTask: ITask = newSprints[sprintIndexWithTask].tasks[taskIndexInBacklog];
+                const taskIndexInSprint: number = newSprints[sprintIndexWithTask].tasks
+                    .findIndex((task) => task._id.toHexString() === taskId);
+
+                if (taskIndexInSprint === -1) {
+                    return res.status(NOT_FOUND).send('Could not find task with given ID');
+                }
+
+                const updatedTask: ITask = newSprints[sprintIndexWithTask].tasks[taskIndexInSprint];
                 updates.forEach((update) => updatedTask[update] = req.body[update]);
 
                 newSprints[sprintIndexWithTask].tasks.splice(sprintIndexWithTask, 1, updatedTask);
