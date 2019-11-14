@@ -76,6 +76,8 @@ router.patch('/:projectId/tasks/:taskId', auth, async (req: Request, res: Respon
         const taskIndexInBacklog = project.toObject().backlog.tasks
             .findIndex((task: ITask) => task._id.toHexString() === taskId);
 
+        console.log('!!!!!!!!!', taskIndexInBacklog);
+
         if (taskIndexInBacklog > -1) {
             const newBacklogTasks: ITask[] = project.toObject().backlog.tasks;
             const updatedTask: ITask = newBacklogTasks[taskIndexInBacklog];
