@@ -79,6 +79,8 @@ router.patch('/:projectId/tasks/:taskId', auth, async (req: Request, res: Respon
         console.log('!!!!!!!!!', taskIndexInBacklog);
 
         if (taskIndexInBacklog > -1) {
+            console.log('aaaaaaaaa');
+
             const newBacklogTasks: ITask[] = project.toObject().backlog.tasks;
             const updatedTask: ITask = newBacklogTasks[taskIndexInBacklog];
             updates.forEach((update) => updatedTask[update] = req.body[update]);
@@ -93,6 +95,8 @@ router.patch('/:projectId/tasks/:taskId', auth, async (req: Request, res: Respon
             await project.save();
             res.send('Successfully removed task from sprint backlog');
         } else {
+            console.log('bbbbbbbbbb');
+
             let taskIdInSprint = -1;
             const sprintIndexWithTask = project.toObject().sprints
                 .findIndex((sprint: any) => sprint.tasks
