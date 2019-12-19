@@ -4,7 +4,6 @@ import {User} from '../mongoose/users.mongoose';
 import {IAuthorizedRequest, IUserDTO} from '../models/users.model';
 import {auth} from '../middleware/authorization';
 import {USER_ERROR} from '../models/users.constans';
-import {getErrorMessage} from '../shared/common.functions';
 
 const router = Router();
 
@@ -36,24 +35,18 @@ router.post('/login', async (req: Request, res: Response) => {
         const token = await user.generateAuthToken();
         res.send({user, token});
     } catch (e) {
-        console.error(1, e);
-        console.error(2, e.message);
-        console.error(3, e.name);
         let httpStatus = BAD_REQUEST;
         let message = 'Could not log in...';
-        switch (getErrorMessage(e)) {
+        switch (e.message) {
             case USER_ERROR.PASSWORD_INCORRECT:
-                console.log('1111111', e, USER_ERROR.PASSWORD_INCORRECT, e === USER_ERROR.PASSWORD_INCORRECT, e === USER_ERROR.EMAIL_NOT_FOUND);
                 httpStatus = UNAUTHORIZED;
                 message = 'Password is incorrect...';
                 break;
             case USER_ERROR.EMAIL_NOT_FOUND:
-                console.log('22222222', e, USER_ERROR.EMAIL_NOT_FOUND, e === USER_ERROR.PASSWORD_INCORRECT, e === USER_ERROR.EMAIL_NOT_FOUND);
                 httpStatus = NOT_FOUND;
                 message = 'Could not find user with given e-mail';
                 break;
             default:
-                console.log('3333333333', e, USER_ERROR.PASSWORD_INCORRECT, USER_ERROR.EMAIL_NOT_FOUND, e === USER_ERROR.PASSWORD_INCORRECT, e === USER_ERROR.EMAIL_NOT_FOUND);
         }
         res.status(httpStatus).send({message});
     }
