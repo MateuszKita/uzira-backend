@@ -37,9 +37,8 @@ router.post('/login', async (req: Request, res: Response) => {
         res.send({user, token});
     } catch (e) {
         console.error(1, e);
-        console.error(2, e.error);
-        console.error(3, e.err);
-        console.error(4, e.Error);
+        console.error(2, e.message);
+        console.error(3, e.name);
         let httpStatus = BAD_REQUEST;
         let message = 'Could not log in...';
         switch (getErrorMessage(e)) {

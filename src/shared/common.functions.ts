@@ -1,3 +1,3 @@
-export function getErrorMessage(error: string) {
-    return error.replace('Error ', '');
+export function getErrorMessage(error: Error) {
+    return error.name.replace('Error ', '');
 }
