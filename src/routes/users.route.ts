@@ -1,8 +1,9 @@
 import {Request, Response, Router} from 'express';
-import {BAD_REQUEST, CONFLICT, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND} from 'http-status-codes';
+import {BAD_REQUEST, CONFLICT, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, UNAUTHORIZED} from 'http-status-codes';
 import {User} from '../mongoose/users.mongoose';
 import {IAuthorizedRequest, IUserDTO} from '../models/users.model';
 import {auth} from '../middleware/authorization';
+import {USER_ERROR} from '../models/users.constans';
 
 const router = Router();
 
@@ -35,7 +36,20 @@ router.post('/login', async (req: Request, res: Response) => {
         res.send({user, token});
     } catch (e) {
         console.error(e);
-        res.status(BAD_REQUEST).send(e);
+        let httpStatus = BAD_REQUEST;
+        let message = 'Could not log in...';
+        switch (e) {
+            case USER_ERROR.PASSWORD_INCORRECT:
+                httpStatus = UNAUTHORIZED;
+                message = 'Password is incorrect...';
+                break;
+            case USER_ERROR.EMAIL_NOT_FOUND:
+                httpStatus = NOT_FOUND;
+                message = 'Could not find user with given e-mail';
+                break;
+            default:
+        }
+        res.status(httpStatus).send({message});
     }
 });
 

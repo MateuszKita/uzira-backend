@@ -4,6 +4,7 @@ import {Schema, Model, model} from 'mongoose';
 import {JWT_KEY} from '../shared/constants';
 import {sign} from 'jsonwebtoken';
 import {IUserDTO} from '../models/users.model';
+import {USER_ERROR} from '../models/users.constans';
 
 export const UserSchema: Schema = new Schema({
     name: {
@@ -91,13 +92,13 @@ UserSchema.statics.findByCredentials = async (email: string, password: string) =
     const user = await User.findOne({email});
 
     if (!user) {
-        throw new Error('Unable to login');
+        throw new Error(USER_ERROR.EMAIL_NOT_FOUND);
     }
 
     const isMatch = await compare(password, user.password);
 
     if (!isMatch) {
-        throw new Error('Unable to login');
+        throw new Error(USER_ERROR.PASSWORD_INCORRECT);
     }
 
     return user;
