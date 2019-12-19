@@ -44,7 +44,7 @@ router.post('/login', async (req: Request, res: Response) => {
                 break;
             case USER_ERROR.EMAIL_NOT_FOUND:
                 httpStatus = NOT_FOUND;
-                message = 'Could not find user with given e-mail';
+                message = 'Could not find user with given e-mail address...';
                 break;
             default:
         }
