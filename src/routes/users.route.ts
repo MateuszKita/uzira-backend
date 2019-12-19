@@ -50,7 +50,7 @@ router.post('/login', async (req: Request, res: Response) => {
                 message = 'Could not find user with given e-mail';
                 break;
             default:
-                console.log('3333333333', e);
+                console.log('3333333333', e, USER_ERROR.PASSWORD_INCORRECT, USER_ERROR.EMAIL_NOT_FOUND, e === USER_ERROR.PASSWORD_INCORRECT, e === USER_ERROR.EMAIL_NOT_FOUND);
         }
         res.status(httpStatus).send({message});
     }
