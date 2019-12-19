@@ -40,14 +40,17 @@ router.post('/login', async (req: Request, res: Response) => {
         let message = 'Could not log in...';
         switch (e) {
             case USER_ERROR.PASSWORD_INCORRECT:
+                console.log('1111111', e, USER_ERROR.PASSWORD_INCORRECT, e === USER_ERROR.PASSWORD_INCORRECT, e === USER_ERROR.EMAIL_NOT_FOUND);
                 httpStatus = UNAUTHORIZED;
                 message = 'Password is incorrect...';
                 break;
             case USER_ERROR.EMAIL_NOT_FOUND:
+                console.log('22222222', e, USER_ERROR.EMAIL_NOT_FOUND, e === USER_ERROR.PASSWORD_INCORRECT, e === USER_ERROR.EMAIL_NOT_FOUND);
                 httpStatus = NOT_FOUND;
                 message = 'Could not find user with given e-mail';
                 break;
             default:
+                console.log('3333333333', e);
         }
         res.status(httpStatus).send({message});
     }
