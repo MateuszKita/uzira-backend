@@ -4,6 +4,7 @@ import {User} from '../mongoose/users.mongoose';
 import {IAuthorizedRequest, IUserDTO} from '../models/users.model';
 import {auth} from '../middleware/authorization';
 import {USER_ERROR} from '../models/users.constans';
+import {getErrorMessage} from '../shared/common.functions';
 
 const router = Router();
 
@@ -41,7 +42,7 @@ router.post('/login', async (req: Request, res: Response) => {
         console.error(4, e.Error);
         let httpStatus = BAD_REQUEST;
         let message = 'Could not log in...';
-        switch (e) {
+        switch (getErrorMessage(e)) {
             case USER_ERROR.PASSWORD_INCORRECT:
                 console.log('1111111', e, USER_ERROR.PASSWORD_INCORRECT, e === USER_ERROR.PASSWORD_INCORRECT, e === USER_ERROR.EMAIL_NOT_FOUND);
                 httpStatus = UNAUTHORIZED;
