@@ -1,5 +1,5 @@
 import {Request, Response, Router} from 'express';
-import {BAD_REQUEST, NOT_FOUND} from 'http-status-codes';
+import {BAD_REQUEST, CONFLICT, NOT_FOUND} from 'http-status-codes';
 import {IAuthorizedRequest, IUser} from '../models/users.model';
 import {auth} from '../middleware/authorization';
 import {Project} from '../mongoose/projects.mongoose';
@@ -118,7 +118,7 @@ router.post('/:projectId/users/:userId', auth, async (req: Request, res: Respons
             const projectUsers: IUser[] = project.toObject().users;
 
             if (projectUsers.map((u) => u._id.toHexString()).some((uId) => uId === newUserObject._id.toHexString())) {
-                return res.status(BAD_REQUEST).send({message: 'hej'});
+                return res.status(CONFLICT).send({message: `User '${newUserObject.name} is already in this project'`});
             }
 
             const newUsers: IUser[] = [...projectUsers, newUserObject];
