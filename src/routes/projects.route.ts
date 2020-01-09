@@ -116,6 +116,11 @@ router.post('/:projectId/users/:userId', auth, async (req: Request, res: Respons
         if (project && newUser) {
             const newUserObject: IUser = (newUser as any).toObject();
             const projectUsers: IUser[] = project.toObject().users;
+
+            if (projectUsers.map((u) => u._id).some((uId) => uId === newUserObject._id)) {
+                return res.status(BAD_REQUEST).send({message: `User '${newUserObject.name} is already in this project'`});
+            }
+
             const newUsers: IUser[] = [...projectUsers, newUserObject];
             await project.update({
                 ...project.toObject(),
