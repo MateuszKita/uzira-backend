@@ -138,16 +138,16 @@ router.post('/:projectId/users/:userId', auth, async (req: Request, res: Respons
  *                      Remove user from project / Specific User - "DELETE /projects/:projectId/users/:userId"
  ******************************************************************************/
 
-router.post('/:projectId/users/:userId', auth, async (req: Request, res: Response) => {
+router.delete('/:projectId/users/:userId', auth, async (req: Request, res: Response) => {
     try {
         const {projectId, userId} = req.params;
         const user = (req as any as IAuthorizedRequest).user;
-        const p1 = await Project.findOne({_id: projectId});
-        console.log('p1');
-        console.log(p1);
         const project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
         if (project) {
             const projectUsers: IUser[] = project.toObject().users;
+            if (projectUsers.length <= 1) {
+                return res.status(BAD_REQUEST).send({message: 'This is the last user, so it can\'t be deleted'});
+            }
             const newUsers: IUser[] = projectUsers.filter((projectUser) => projectUser._id !== userId);
             await project.update({
                 ...project.toObject(),
