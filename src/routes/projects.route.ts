@@ -143,6 +143,7 @@ router.post('/:projectId/users/:userId', auth, async (req: Request, res: Respons
         const {projectId, userId} = req.params;
         const user = (req as any as IAuthorizedRequest).user;
         const p1 = await Project.findOne({_id: projectId});
+        console.log('p1');
         console.log(p1);
         const project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
         if (project) {
@@ -157,7 +158,7 @@ router.post('/:projectId/users/:userId', auth, async (req: Request, res: Respons
                 message: `Removed user from project \'${project.toObject().name}\'`
             });
         } else {
-            res.status(NOT_FOUND).send();
+            res.status(NOT_FOUND).send({message: 'Could not find project with given id'});
         }
     } catch (e) {
         console.error(e);
