@@ -117,7 +117,7 @@ router.post('/:projectId/users/:userId', auth, async (req: Request, res: Respons
             const newUserObject: IUser = (newUser as any).toObject();
             const projectUsers: IUser[] = project.toObject().users;
 
-            if (projectUsers.map((u) => u._id.toHexString()).some((uId) => uId === newUserObject._id.toHexString())) {
+            if (projectUsers.map((u) => u._id).some((uId) => uId === newUserObject._id.toHexString())) {
                 return res.status(CONFLICT).send({message: `User '${newUserObject.name} is already in this project'`});
             }
 
