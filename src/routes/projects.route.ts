@@ -146,7 +146,7 @@ router.delete('/:projectId/users/:userId', auth, async (req: Request, res: Respo
         if (project) {
             const projectUsers: IUser[] = project.toObject().users;
             if (projectUsers.length <= 1) {
-                return res.status(BAD_REQUEST).send({message: 'This is the last user, so it can\'t be deleted'});
+                return res.status(BAD_REQUEST).send({message: 'This is the last user in project, it can\'t be deleted'});
             }
             const newUsers: IUser[] = projectUsers.filter((projectUser) => projectUser._id !== userId);
             await project.update({
