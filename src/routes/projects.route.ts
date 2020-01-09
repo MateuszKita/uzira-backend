@@ -142,7 +142,8 @@ router.post('/:projectId/users/:userId', auth, async (req: Request, res: Respons
     try {
         const {projectId, userId} = req.params;
         const user = (req as any as IAuthorizedRequest).user;
-        console.log(await Project.findOne({_id: projectId}));
+        const p1 = await Project.findOne({_id: projectId});
+        console.log(p1);
         const project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
         if (project) {
             const projectUsers: IUser[] = project.toObject().users;
