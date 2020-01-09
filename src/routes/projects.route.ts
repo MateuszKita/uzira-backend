@@ -120,7 +120,7 @@ router.post('/:projectId/users/:userId', auth, async (req: Request, res: Respons
             console.log('newUserObject', newUserObject);
             console.log('projectUsers', projectUsers);
 
-            if (projectUsers.map((u) => u._id).some((uId) => uId === newUserObject._id)) {
+            if (projectUsers.map((u) => u._id.toHexString()).some((uId) => uId === newUserObject._id.toHexString())) {
                 return res.status(BAD_REQUEST).send({message: `User '${newUserObject.name} is already in this project'`});
             }
 
