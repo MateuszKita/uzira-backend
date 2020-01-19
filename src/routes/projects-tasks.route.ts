@@ -89,7 +89,7 @@ router.patch('/:projectId/tasks/:taskId', auth, async (req: Request, res: Respon
                 }
             });
             await project.save();
-            res.send({message: 'Successfully removed task from sprint backlog'});
+            res.send({message: 'Successfully updated task in sprint backlog'});
         } else {
             let taskIdInSprint = -1;
             const sprintIndexWithTask = project.toObject().sprints
