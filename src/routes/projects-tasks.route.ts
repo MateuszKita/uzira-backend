@@ -62,7 +62,7 @@ router.patch('/:projectId/tasks/:taskId', auth, async (req: Request, res: Respon
         const isValidOperation = updates.every((update) => allowedUpdates.includes(update)) && updates.length > 0;
 
         if (!isValidOperation) {
-            return res.status(BAD_REQUEST).send({error: 'Invalid updates!'});
+            return res.status(BAD_REQUEST).send({message: 'Invalid updates!'});
         }
 
         const {projectId, taskId} = req.params;
@@ -70,7 +70,7 @@ router.patch('/:projectId/tasks/:taskId', auth, async (req: Request, res: Respon
         const project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
 
         if (!project) {
-            return res.status(NOT_FOUND).send('Could not find project with given ID');
+            return res.status(NOT_FOUND).send({message: 'Could not find project with given ID'});
         }
 
         const taskIndexInBacklog = project.toObject().backlog.tasks
@@ -89,7 +89,7 @@ router.patch('/:projectId/tasks/:taskId', auth, async (req: Request, res: Respon
                 }
             });
             await project.save();
-            res.send('Successfully removed task from sprint backlog');
+            res.send({message: 'Successfully removed task from sprint backlog'});
         } else {
             let taskIdInSprint = -1;
             const sprintIndexWithTask = project.toObject().sprints
@@ -109,7 +109,7 @@ router.patch('/:projectId/tasks/:taskId', auth, async (req: Request, res: Respon
                     .findIndex((task) => task._id.toHexString() === taskId);
 
                 if (taskIndexInSprint === -1) {
-                    return res.status(NOT_FOUND).send('Could not find task with given ID');
+                    return res.status(NOT_FOUND).send({message: 'Could not find task with given ID'});
                 }
 
                 const updatedTask: ITask = newSprints[sprintIndexWithTask].tasks[taskIndexInSprint];
@@ -121,9 +121,13 @@ router.patch('/:projectId/tasks/:taskId', auth, async (req: Request, res: Respon
                     sprints: newSprints
                 });
                 await project.save();
-                res.send((project.toObject().sprints)[sprintIndexWithTask].tasks[taskIdInSprint]);
+                res.send({
+                    message: `Successfully updated task \"${(project.toObject().sprints)[sprintIndexWithTask]
+                        .tasks[taskIdInSprint].name}\" in Sprint ${sprintIndexWithTask + 1
+                    }`
+                });
             } else {
-                return res.status(NOT_FOUND).send('Could not find task with given ID');
+                return res.status(NOT_FOUND).send({message: 'Could not find task with given ID'});
             }
         }
     } catch (e) {
