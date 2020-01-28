@@ -115,7 +115,7 @@ router.patch('/:projectId/tasks/:taskId', auth, async (req: Request, res: Respon
                 const updatedTask: ITask = newSprints[sprintIndexWithTask].tasks[taskIndexInSprint];
                 updates.forEach((update) => updatedTask[update] = req.body[update]);
 
-                newSprints[sprintIndexWithTask].tasks.splice(sprintIndexWithTask, 1, updatedTask);
+                newSprints[sprintIndexWithTask].tasks.splice(taskIndexInSprint, 1, updatedTask);
                 await project.update({
                     ...project.toObject(),
                     sprints: newSprints

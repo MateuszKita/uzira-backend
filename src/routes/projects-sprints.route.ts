@@ -40,11 +40,19 @@ router.post('/:projectId/sprints', auth, async (req: Request, res: Response) => 
         const user = (req as any as IAuthorizedRequest).user;
         const project = await Project.findOne({_id: projectId, users: {$elemMatch: {_id: user._id}}});
         if (project) {
-            const projectSprints: ISprint[] = project.toObject().sprints;
+            let projectSprints: ISprint[] = project.toObject().sprints;
             let sprintIndex = 1;
             if (projectSprints.length > 0) {
                 sprintIndex = Math.max(...projectSprints.map((sprint) => sprint.index)) + 1;
             }
+
+            if (req.body.active) {
+                projectSprints = projectSprints.map((sprint) => ({
+                    ...sprint,
+                    active: false
+                }));
+            }
+
             const newSprints: IUser[] = [...projectSprints, {
                 ...req.body,
                 index: sprintIndex

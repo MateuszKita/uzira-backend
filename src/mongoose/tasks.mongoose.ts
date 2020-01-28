@@ -23,7 +23,7 @@ const GenericTaskSchema: Schema = new Schema({
         required: false
     },
     assigned: {
-        type: Number
+        type: Object
     },
     sprint: {
         type: String
@@ -54,7 +54,7 @@ export const TaskSchema: Schema = new Schema({
         default: 0
     },
     assigned: {
-        type: Number,
+        type: Object,
         default: null
     },
     projectId: {
